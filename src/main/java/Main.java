@@ -2,7 +2,7 @@ import static spark.Spark.*;
 
 public class Main {
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		get("/", (request, response) -> hola());
 		post("/hola", (request, response) -> responder_saludo(request.queryParams("nombre_saludo")));
 	}
@@ -20,6 +20,11 @@ public class Main {
 					+ "<input type='submit' value='Saluda'"
 				+ "</body>"
 			+ "</html>";
+	}*/
+	
+	public static void main(String[] args) {
+		UI ui = new SparkUI();
+		ui.main();
 	}
 
 }

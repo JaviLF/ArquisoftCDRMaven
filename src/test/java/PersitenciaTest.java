@@ -12,5 +12,19 @@ class PersitenciaTest {
 		CDR cdr2=persistencia1.getCDR(cdr.getId());
 		assertEquals(cdr.getId(),cdr2.getId());
 	}
-
+	@Test
+	void SaveLineaTest() {
+		Plan plan=new PlanPrepago();
+		Plan plan2=new PlanWow();
+		Linea linea=new Linea("5555","Jose",plan);
+		PersistenciaLinea persistencia2=new PersistenciaLineaSql();
+		persistencia2.guardarLinea(linea);
+		Linea linea2=persistencia2.getLinea("5555");
+		assertEquals(linea.getNumero(),linea2.getNumero());
+		Linea linea3=new Linea("4444","Andres",plan2);
+		linea3.addNumeroAmigo("1111");
+		persistencia2.guardarLinea(linea3);
+		Linea linea4=persistencia2.getLinea("4444");
+		assertEquals(linea3.getNumero(),linea4.getNumero());
+	}
 }

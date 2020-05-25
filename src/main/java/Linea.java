@@ -61,4 +61,7 @@ public class Linea {
 		}
 		return this.plan.getTarifaPorMinuto(cdr);
 	}
+	public List<String> getNumerosAmigos(){
+		return this.numeros_amigos;
+	}
 }
