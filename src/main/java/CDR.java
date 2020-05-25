@@ -3,24 +3,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CDR {
 	private static AtomicInteger ID_GENERATOR = new AtomicInteger(1);
 	int id;
-	private String telf_salida;
-	private String telf_entrada;
+	private String telf_origen;
+	private String telf_destino;
 
 	private int horaLlamada = 0;
 	private double duracionLlamada= 0;
 	private double tarifa;
 	
 	public CDR() { 
-		telf_salida="0000";
-		telf_entrada="1111";
+		telf_origen="0000";
+		telf_destino="1111";
 		horaLlamada = 0;
 		duracionLlamada= 0.0;
 	}
 	
 	public CDR(String numeroLlamante, String numeroLlamado,int horaLlamada,double duracionLlamada) {
 		this.id=ID_GENERATOR.getAndIncrement();
-		this.telf_salida=numeroLlamante;
-		this.telf_entrada=numeroLlamado;
+		this.telf_origen=numeroLlamante;
+		this.telf_destino=numeroLlamado;
 		this.horaLlamada=horaLlamada;
 		this.duracionLlamada=duracionLlamada;
 	}
@@ -43,16 +43,16 @@ public class CDR {
 		return duracionLlamada;
 	}
 	public void setNumeroLlamante(String numeroLlamante) {
-		this.telf_salida=numeroLlamante;
+		this.telf_origen=numeroLlamante;
 	}
 	public String getNumeroLlamante() {
-		return telf_salida;
+		return telf_origen;
 	}
 	public void setNumeroLlamado(String numeroLlamado) {
-		this.telf_entrada=numeroLlamado;
+		this.telf_destino=numeroLlamado;
 	}
 	public String getNumeroLlamado() {
-		return telf_entrada;
+		return telf_destino;
 	}
 	public void setTarifa(double tarifa) {
 		this.tarifa=tarifa;
