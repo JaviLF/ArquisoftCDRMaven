@@ -1,9 +1,11 @@
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
 class PersitenciaTest {
 
+	/*
 	@Test
 	void SaveCDRTest() {
 		CDR cdr=new CDR("5555","2222",22,2.5);
@@ -12,6 +14,8 @@ class PersitenciaTest {
 		CDR cdr2=persistencia1.getCDR(cdr.getId());
 		assertEquals(cdr.getId(),cdr2.getId());
 	}
+	*/
+	/*
 	@Test
 	void SaveLineaTest() {
 		Plan plan=new PlanPrepago();
@@ -27,4 +31,23 @@ class PersitenciaTest {
 		Linea linea4=persistencia2.getLinea("4444");
 		assertEquals(linea3.getNumero(),linea4.getNumero());
 	}
+	*/
+	/*
+	@Test
+	void savePlanDTO() {
+		PersistenciaPlan persi = new PersistenciaPlanSql();
+		//PlanDTO dto = new PlanDTO("PREPAGO","HorarioReducido+HorarioNormal+HorarioSuperReducido","1.45+0.95+0.70");
+		//PlanDTO dto = new PlanDTO("POSTPAGO","Tarifa","0.99");
+		PlanDTO dto = new PlanDTO("WOW","Tarifa+amigos","0.99+5");
+		//alm.guardarPlan(dto);
+		persi.savePlan(dto);
+	}
+	*/
+	
+	@Test
+	void loadPlans() {
+		PersistenciaPlan persi = new PersistenciaPlanSql();
+		assertNull("Llego a loadPlans, 52, PersistenciaTest",persi.loadPlans());
+	}
+	
 }
