@@ -2,55 +2,138 @@ import static spark.Spark.*;
 public class SparkUI implements UI{
 
 	public void main() {
-		get("/", (request, response) -> getCDRData());
+		PersistenciaCDR cdrs= new PersistenciaCDRSql();
+		PersistenciaLinea lineas= new PersistenciaLineaSql();
+		
+		get("/", (request, response) -> menu());
+		post("/addCDR", (request, response) -> addCDR());
+		post("/addLinea", (request, response) -> addLinea());
+		post("/SaveLinea",(request, response) ->{
+			String telf=request.queryParams("telefono");
+			String usuario=request.queryParams("usuario");
+			String tipoPlan=request.queryParams("tipo");
+			Plan plan=new PlanPrepago();
+			if(Integer.parseInt(tipoPlan)==2)
+				plan=new PlanPostpago();
+			if(Integer.parseInt(tipoPlan)==3)
+				plan=new PlanWow();
+			Linea linea=new Linea(telf,usuario,plan);
+			lineas.guardarLinea(linea);
+			return addCDR();
+		});
+		post("/SaveCDR",(request, response) ->{
+			String telf_origen=request.queryParams("telf_origen");
+			String telf_destino=request.queryParams("telf_destino");
+			String horaLlamada=request.queryParams("horaLlamada");
+			String duracionLlamada=request.queryParams("duracionLlamada");
+			CDR cdr=new CDR(telf_origen,telf_destino,Integer.parseInt(horaLlamada),Double.parseDouble(duracionLlamada));
+			double tarifa=cdr.calcularTarifaParaLinea(lineas.getLinea(telf_origen));
+			cdrs.guardarCDR(cdr);
+			return mostrarTarificado(cdr.getId());
+		});
+		
 		post("/CDRTarificado",(request, response) -> {
 			String telf_origen=request.queryParams("telf_origen");
 			String telf_destino=request.queryParams("telf_destino");
 			String horaLlamada=request.queryParams("horaLlamada");
 			String duracionLlamada=request.queryParams("duracionLlamada");
-			return mostrarTarificado(telf_origen,telf_destino,horaLlamada,duracionLlamada);
+			String plan=request.queryParams("plan");
+			System.out.println(plan);
+			CDR cdr=new CDR(telf_origen,telf_destino,Integer.parseInt(horaLlamada),Double.parseDouble(duracionLlamada));
+			Plan plan1=new PlanPrepago();
+			if(plan=="2") {
+				plan1=new PlanPostpago();
+			}
+			if(plan=="3") {
+				plan1=new PlanWow();
+			}
+			Linea linea=new Linea(telf_origen,"Pepe",plan1);
+			double tarifa=cdr.calcularTarifaParaLinea(linea);
+			PersistenciaCDR persis=new PersistenciaCDRSql();
+			persis.guardarCDR(cdr);
+			return mostrarTarificado(cdr.getId());
 		});
 	}
 	
+	public static String menu() {
+		return "<html>"
+					+ "<body>"
+						//+ "<form method='post' action='/addCDR'>"//
+						//+ "<input type='submit' value='Generar CDR'"
+						//+ "</form>"
+						+ "<form method='post' action='/addLinea'>"//
+						+ "<input type='submit' value='Generar Linea'"
+						//+ "</form>"
+					+ "</body>"
+				+ "</html>";
+	}
 	
-	
-	private static String mostrarTarificado(String telf_origen,String telf_destino,String horaLlamada,String duracionLlamada) {
-		CDR cdr=new CDR(telf_origen,telf_destino,Integer.parseInt(horaLlamada),Double.parseDouble(duracionLlamada));
-		Plan plan=new PlanPrepago();
-		Linea linea=new Linea(telf_origen,"Pepe",plan);
-		double tarifa=cdr.calcularTarifaParaLinea(linea);
+	public static String addLinea() {
 		return "<html>"
 				+ "<body>"
-					+ "<label>telf_origen:</label>"
-					+ "<label>  "+telf_origen+"</label>"
+					+ "<form method='post' action='/SaveLinea'>"//
+					+ "<label>telefono:</label>"
+					+ "<input type='text' name='telefono'>"
 					+ "<br/>"
-					+ "<label>telf_destino:</label>"
-					+ "<label> "+telf_destino+"</label>"
+					+ "<label>Usuario:</label>"
+					+ "<input type='text' name='usuario'>"
 					+ "<br/>"
-					+ "<label>horaLlamada:</label>"
-					+ "<label> "+horaLlamada+"</label>"
+					+ "<b>Tipo:</b>"
+					+ "<select name='tipo'  id='tipo'>"
+                    +"<option value='3'>Plan Wow</option>"
+                    +"<option value='1'>Plan PrePago</option>"
+                    +"<option value='2'>Plan PostPago</option>"
+                    +"</select>"
 					+ "<br/>"
-					+ "<label>duracionLlamada:</label>"
-					+ "<label> "+duracionLlamada+"</label>"
-					+ "<br/>"
-					+ "<label>tarifaLlamada:</label>"
-					+ "<label> "+String.valueOf(tarifa)+"</label>"
+					+ "<input type='submit' value='Guardar Linea'"
 				+ "</body>"
 			+ "</html>";
 	}
-	public static String getCDRData() {
+	
+	
+	private static String mostrarTarificado(int id) {
+		PersistenciaCDR persis=new PersistenciaCDRSql();
+		CDR cdr=persis.getCDR(id);
 		return "<html>"
 				+ "<body>"
-					+ "<form method='post' action='/CDRTarificado'>"
+					+ "<form method='get' action='/'>"
+					+ "<label>telf_origen:</label>"
+					+ "<label>  "+cdr.getNumeroLlamante()+"</label>"
+					+ "<br/>"
+					+ "<label>telf_destino:</label>"
+					+ "<label> "+cdr.getNumeroLlamado()+"</label>"
+					+ "<br/>"
+					+ "<label>horaLlamada:</label>"
+					+ "<label> "+cdr.getHoraLlamada()+"</label>"
+					+ "<br/>"
+					+ "<label>duracionLlamada:</label>"
+					+ "<label> "+cdr.getDuracionLlamada()+"</label>"
+					+ "<br/>"
+					+ "<label>tarifaLlamada:</label>"
+					+ "<label> "+cdr.getTarifa()+"</label>"
+					+ "<br/>"
+					+ "<input type='submit' value='Volver Inicio'"
+				+ "</body>"
+			+ "</html>";
+	}
+	public static String addCDR() {
+		return "<html>"
+				+ "<body>"
+					+ "<form method='post' action='/SaveCDR'>"
 					+ "<label>telf_origen:</label>"
 					+ "<input type='text' name='telf_origen'>"
+					+ "<br/>"
 					+ "<label>telf_destino:</label>"
 					+ "<input type='text' name='telf_destino'>"
+					+ "<br/>"
 					+ "<label>horaLlamada:</label>"
 					+ "<input type='number' name='horaLlamada'>"
+					+ "<br/>"
 					+ "<label>duracionLlamada:</label>"
 					+ "<input type='number' step='0.01' name='duracionLlamada'>"
-					+ "<input type='submit' value='Tarifar'"
+					+ "<br/>"
+					+ "<input type='submit' value='Guardar y Tarifar'"
+					//+ "</form>"
 				+ "</body>"
 			+ "</html>";
 	}
