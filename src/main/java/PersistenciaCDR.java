@@ -1,4 +1,3 @@
-import java.util.List;
 
 public interface PersistenciaCDR {
 	public void guardarCDR(CDR cdr);
