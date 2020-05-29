@@ -109,7 +109,38 @@ public class PersistenciaPlanSql implements PersistenciaPlan{
 	    }
 		return answer;
 	}
-
+	
+	public int getLastID(String tableName) {
+		Connection con = null;
+	      Statement stmt = null;
+	      int idNumber = -1;
+	      try {
+	         Class.forName("org.sqlite.JDBC");
+	         con = DriverManager.getConnection("jdbc:sqlite:test.db");
+	         con.setAutoCommit(false);
+	         stmt = con.createStatement();    
+	         ResultSet rs = stmt.executeQuery("SELECT MAX(Id) FROM '" + tableName + "';");
+	         try {
+	        	 idNumber = ((Number) rs.getObject(1)).intValue();
+	         }
+	         catch (NumberFormatException e)
+	         {
+	        	 idNumber = -1;
+	         }
+	         //idNumber = rs.getInt("ID");
+	         rs.close();
+	         stmt.close();
+	        // con.commit();
+	         con.close();
+	         
+	         return idNumber;
+	      } catch ( Exception e ) {
+	         System.err.println("Exception in 127 getLastID() en PersistenciaPlanSql, " + e.getClass().getName() + ": " + e.getMessage() );
+	         System.exit(0);
+	      }
+		return idNumber;
+	}
+	
 	@Override
 	public List<Plan> loadPlans() {
 		List<Plan> planes = new ArrayList<Plan>();

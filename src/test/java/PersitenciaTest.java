@@ -43,11 +43,20 @@ class PersitenciaTest {
 		persi.savePlan(dto);
 	}
 	*/
-	
+	/*
 	@Test
 	void loadPlans() {
 		PersistenciaPlan persi = new PersistenciaPlanSql();
 		assertNull("Llego a loadPlans, 52, PersistenciaTest",persi.loadPlans());
 	}
+	*/
+	@Test
+	void getLastIDfromPlan() {
+		PersistenciaPlan persi = new PersistenciaPlanSql();
+		System.out.println(persi.getLastID("PLANES"));
+		System.out.println("Llego a donde quiero");
+	}
+	
+	
 	
 }

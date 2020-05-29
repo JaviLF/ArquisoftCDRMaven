@@ -6,4 +6,6 @@ public interface PersistenciaPlan {
 
 	public List<Plan> loadPlans();
 	
+	public int getLastID(String tableName);
+	
 }
