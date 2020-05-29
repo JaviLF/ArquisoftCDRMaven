@@ -33,8 +33,9 @@ public class PersistenciaPlanSql implements PersistenciaPlan{
 		         Class.forName("org.sqlite.JDBC");
 		         c = DriverManager.getConnection("jdbc:sqlite:test.db");
 		         c.setAutoCommit(false);
-		         stmt = c.createStatement();    
-		         String sql = "INSERT INTO PLANES (ID,NOMBRE,CARACTERISTICA,PROPIAS) " + "VALUES ('3','"+ dto.getNombre() + "','" + dto.getCaracteristica() + "','" + dto.getPropias() + "');" ;
+		         stmt = c.createStatement();
+		         int idNumber = this.getLastID(TABLAPLANES) + 1;
+		         String sql = "INSERT INTO PLANES (ID,NOMBRE,CARACTERISTICA,PROPIAS) " + "VALUES ('" + idNumber + "','"+ dto.getNombre() + "','" + dto.getCaracteristica() + "','" + dto.getPropias() + "');" ;
 		         stmt.executeUpdate(sql);
 		         stmt.close();
 		         c.commit();
