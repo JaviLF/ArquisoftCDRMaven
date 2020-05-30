@@ -146,6 +146,7 @@ public class PersistenciaPlanSql implements PersistenciaPlan{
 	@Override
 	public List<Plan> loadPlans() {
 		List<Plan> planes = new ArrayList<Plan>();
+		
 		if (this.tableExists(TABLAPLANES))
 		{
 			Connection c = null;
@@ -172,6 +173,18 @@ public class PersistenciaPlanSql implements PersistenciaPlan{
 			         System.out.println( "PROPIAS = " + propias );
 			         System.out.println();
 			         
+			         if(name.equals("PREPAGO")) {
+			        	 System.out.println("creo prepago....");
+			        	 planes.add(new PlanPrepago());
+			         }
+			         if(name.equals("POSTPAGO")) {
+			        	 planes.add(new PlanPostpago());
+			         }
+			         if(name.equals("WOW")) {
+			        	 planes.add(new PlanWow());
+			         }
+			         
+			
 			      }
 			      rs.close();
 			      stmt.close();
@@ -180,7 +193,8 @@ public class PersistenciaPlanSql implements PersistenciaPlan{
 			      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 			      System.exit(0);
 			   }
-			   return null;
+			   System.out.println("ESta devolviendo....");
+			   return planes;
 		}
 		else 
 		{

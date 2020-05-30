@@ -1,9 +1,12 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 class PersitenciaTest {
-/*
+
 	@Test
 	void SQLSaveCDRTest() {
 		CDR cdr=new CDR("5555","2222",22,2.5);
@@ -52,20 +55,7 @@ class PersitenciaTest {
 		Linea linea4=persistencia2.getLinea("4444");
 		assertEquals(linea3.getNumero(),linea4.getNumero());
 	}
-	*/
 	
-	@Test
-	void savePlanDTO() {
-		PersistenciaPlan persi = new PersistenciaPlanSql();
-		//PlanDTO dto = new PlanDTO("PREPAGO","HorarioReducido+HorarioNormal+HorarioSuperReducido","1.45+0.95+0.70");
-		//PlanDTO dto = new PlanDTO("POSTPAGO","Tarifa","0.99");
-		//PlanDTO dto = new PlanDTO("WOW","Tarifa+amigos","0.99+5");
-		//PlanDTO dto = new PlanDTO("FAMILIA","Tarifa+amigos","0.99+5");
-		//PlanDTO dto = new PlanDTO("HOGAR","Tarifa","0.99");
-		//alm.guardarPlan(dto);
-		//persi.savePlan(dto);
-		persi.loadPlans();
-	}
 	
 	
 	@Test
@@ -81,4 +71,13 @@ class PersitenciaTest {
 		boolean expected = false;
 		assertEquals(expected,persi.planExists("POSTPAGO"));
 	}
+	
+	@Test
+	void loadsAListOfPlans() {
+		PersistenciaPlan persi = new PersistenciaPlanSql();
+		List<Plan> actual = persi.loadPlans();
+		Plan expected = actual.get(0);
+		assertEquals(expected,actual.get(0));
+	}
+	
 }
