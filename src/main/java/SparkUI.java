@@ -40,7 +40,7 @@ public class SparkUI implements UI{
 			String duracionLlamada=request.queryParams("duracionLlamada");
 			CDR cdr=new CDR(telf_origen,telf_destino,Integer.parseInt(horaLlamada),Double.parseDouble(duracionLlamada));
 			double tarifa=cdr.calcularTarifaParaLinea(lineas.getLinea(telf_origen));
-			cdrs.guardarCDR(cdr);
+			//cdrs.guardarCDR(cdr);
 			return mostrarTarificado(cdr.getId());
 		});
 		
@@ -62,7 +62,7 @@ public class SparkUI implements UI{
 			Linea linea=new Linea(telf_origen,"Pepe",plan1);
 			double tarifa=cdr.calcularTarifaParaLinea(linea);
 			PersistenciaCDR persis=new PersistenciaCDRSql();
-			persis.guardarCDR(cdr);
+			//persis.guardarCDR(cdr);
 			return mostrarTarificado(cdr.getId());
 		});
 	}

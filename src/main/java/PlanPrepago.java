@@ -2,6 +2,7 @@
 public class PlanPrepago implements Plan{
 	//propiedades plan
 	int id=1;
+	
 	private double tarifaHorarioNormal=1.45;
 	private double tarifaHorarioReducido=0.95;
 	private double tarifaHorarioSuperReducido=0.70;
