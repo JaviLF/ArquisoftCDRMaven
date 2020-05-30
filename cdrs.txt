@@ -1,0 +1,3 @@
+id%telf_origen%telf_destino%HoraLlamada%DuracionLlamada%Tarifa
+1%5555%2222%22%2.5%0.0
+5555%2222%22%2.5%0.0

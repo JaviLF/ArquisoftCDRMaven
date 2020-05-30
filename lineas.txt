@@ -1,0 +1,5 @@
+TELEFONO%PROPIETARIO%PLAN%NUMERO_AMIGO_1%NUMERO_AMIGO_2%NUMERO_AMIGO_3%NUMERO_AMIGO_4
+5555%Jose%1%null%null%null%null
+4444%Andres%3%null%null%null
+5555%Jose%1%null%null%null%null
+4444%Andres%3%null%null%null
