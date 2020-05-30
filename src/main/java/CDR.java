@@ -1,8 +1,8 @@
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CDR {
-	private static AtomicInteger ID_GENERATOR = new AtomicInteger(1);
-	int id;
+	//private static AtomicInteger ID_GENERATOR = new AtomicInteger(1);
+	int id=0;
 	private String telf_origen;
 	private String telf_destino;
 
@@ -18,7 +18,7 @@ public class CDR {
 	}
 	
 	public CDR(String numeroLlamante, String numeroLlamado,int horaLlamada,double duracionLlamada) {
-		this.id=ID_GENERATOR.getAndIncrement();
+		//this.id=ID_GENERATOR.getAndIncrement();
 		this.telf_origen=numeroLlamante;
 		this.telf_destino=numeroLlamado;
 		this.horaLlamada=horaLlamada;

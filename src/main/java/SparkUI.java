@@ -1,9 +1,21 @@
 import static spark.Spark.*;
+
+import java.io.InputStream;
+
+import javax.servlet.MultipartConfigElement;
 public class SparkUI implements UI{
 
 	public void main() {
 		PersistenciaCDR cdrs= new PersistenciaCDRSql();
 		PersistenciaLinea lineas= new PersistenciaLineaSql();
+		
+		post("/yourUploadPath", (request, response) -> {
+		    request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+		    try (InputStream is = request.raw().getPart("uploaded_file").getInputStream()) {
+		        // Use the input stream to create a file
+		    }
+		    return "File uploaded";
+		});
 		
 		get("/", (request, response) -> menu());
 		post("/addCDR", (request, response) -> addCDR());
@@ -64,9 +76,17 @@ public class SparkUI implements UI{
 						+ "<form method='post' action='/addLinea'>"//
 						+ "<input type='submit' value='Generar Linea'"
 						//+ "</form>"
+						
+						+ "<form method='post' enctype='multipart/form-data'>"
+						+ "    <input type='file' name='uploaded_file'>"
+						+ "    <button>Upload picture</button>"
+    					+ "</form>"
 					+ "</body>"
 				+ "</html>";
 	}
+	
+	
+	
 	
 	public static String addLinea() {
 		return "<html>"
