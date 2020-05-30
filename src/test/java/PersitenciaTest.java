@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class PersitenciaTest {
 
-	/*
+	
 	@Test
 	void SQLSaveCDRTest() {
 		CDR cdr=new CDR("5555","2222",22,2.5);
@@ -56,7 +56,7 @@ class PersitenciaTest {
 		Linea linea4=persistencia2.getLinea("4444");
 		assertEquals(linea3.getNumero(),linea4.getNumero());
 	}
-	*/
+	
 	@Test
 	void DBreturnsTrueWhenNewPlanIsSavedOrAlreadyExists() {
 		PersistenciaPlan persi = new PersistenciaPlanSql();
