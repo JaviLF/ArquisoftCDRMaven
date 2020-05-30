@@ -4,7 +4,7 @@ public interface PersistenciaPlan {
 
 	boolean planExists(String string);
 
-	void savePlan(PlanDTO dto);
+	boolean savePlan(PlanDTO dto);
 
 	List<Plan> loadPlans();
 	
