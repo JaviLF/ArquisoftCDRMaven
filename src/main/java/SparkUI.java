@@ -1,11 +1,25 @@
+
 import static spark.Spark.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import TemplateEngine.FreeMarkerEngine;
+import spark.ModelAndView;
+import spark.template.velocity.VelocityTemplateEngine;
+
 public class SparkUI implements UI{
 
 	public void main() {
 		PersistenciaCDR cdrs= new PersistenciaCDRSql();
 		PersistenciaLinea lineas= new PersistenciaLineaSql();
 		
-		get("/", (request, response) -> menu());
+		 get("/", (request, response) -> {
+	           Map<String, Object> viewObjects = new HashMap<String, Object>();
+	           viewObjects.put("title", "Welcome to Spark Project");
+	           return new ModelAndView(viewObjects, "home.ftl");
+	        }, new FreeMarkerEngine());
+		
 		post("/addCDR", (request, response) -> addCDR());
 		post("/addLinea", (request, response) -> addLinea());
 		post("/SaveLinea",(request, response) ->{
@@ -55,18 +69,7 @@ public class SparkUI implements UI{
 		});
 	}
 	
-	public static String menu() {
-		return "<html>"
-					+ "<body>"
-						//+ "<form method='post' action='/addCDR'>"//
-						//+ "<input type='submit' value='Generar CDR'"
-						//+ "</form>"
-						+ "<form method='post' action='/addLinea'>"//
-						+ "<input type='submit' value='Generar Linea'"
-						//+ "</form>"
-					+ "</body>"
-				+ "</html>";
-	}
+	
 	
 	public static String addLinea() {
 		return "<html>"
