@@ -16,11 +16,13 @@ public class PlanPrepago implements Plan{
 		
 	public double getTarifaPorMinuto(CDR cdr) {
 		double tarifaSegunHora;
-		int horaLlamada=cdr.getHoraLlamada();
-		if((horaLlamada<21)&&(horaLlamada>=7))
+		String [] horaLlamada=cdr.getHoraLlamada().split(":");
+		int hora=Integer.parseInt(horaLlamada[0]);
+		int minuto=Integer.parseInt(horaLlamada[1]);
+		if((hora<21)&&(hora>=7))
 			tarifaSegunHora= tarifaHorarioNormal;
 		else {
-			if((horaLlamada<7)&&(horaLlamada>=1))
+			if((hora<7)&&(hora>=1))
 				tarifaSegunHora= tarifaHorarioSuperReducido;
 			else
 				tarifaSegunHora= tarifaHorarioReducido;

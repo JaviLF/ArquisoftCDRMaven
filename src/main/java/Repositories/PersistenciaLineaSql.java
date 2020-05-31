@@ -1,12 +1,17 @@
 package Repositories;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
+import Entities.CDR;
 import Entities.Linea;
 import Entities.Plan;
+import Entities.PlanFactory;
 import Entities.PlanPostpago;
 import Entities.PlanPrepago;
 import Entities.PlanWow;
@@ -108,14 +113,8 @@ public class PersistenciaLineaSql implements PersistenciaLinea{
 		    	  
 		    	  linea.setNombreUsuario(usuario);
 			      linea.setNumero(numeroLinea);
-		    	  Plan plan=new PlanPrepago();
-			      if (planId==2){
-			    	  plan=new PlanPostpago();
-			      }
-			      if (planId==3){
-			    	  plan=new PlanWow();
-			      }
-			      linea.setPlan(plan);
+			      PlanFactory factory=new PlanFactory();
+				  linea.setPlan(factory.generarPlanById(planId));
 			      linea.addNumeroAmigo(telf_amigo1);
 			      linea.addNumeroAmigo(telf_amigo2);
 			      linea.addNumeroAmigo(telf_amigo3);
@@ -137,5 +136,41 @@ public class PersistenciaLineaSql implements PersistenciaLinea{
 		      System.exit(0);
 		   }
 	    return linea;
+	}
+	public int saveFromArchive(String archive) {
+		int count=0;
+		try {
+			File f = new File(archive);
+			if(f.exists()) {
+				FileReader fr = new FileReader(f);
+				BufferedReader br = new BufferedReader(fr);
+				String linea;
+				linea = br.readLine();//header
+				linea = br.readLine();//firstline
+				String [] contacto;
+				PlanFactory factory=new PlanFactory();
+				while(linea != null) {
+					count=count+1;
+					linea=linea.replace("[", "");
+					linea=linea.replace("]", "");
+					System.out.println(linea);
+					contacto = linea.split(",");
+					Linea lineaTelef = new Linea();
+					lineaTelef.setNumero(contacto[0]);
+					lineaTelef.setNombreUsuario(contacto[1]);
+					lineaTelef.setPlan(factory.generarPlanByName(contacto[2]));
+					for(int i=3;i<contacto.length;i++) {
+						lineaTelef.addNumeroAmigo(contacto[i]);
+					}
+					guardarLinea(lineaTelef);
+					linea = br.readLine();
+				}
+				br.close();
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return count;
 	}
 }

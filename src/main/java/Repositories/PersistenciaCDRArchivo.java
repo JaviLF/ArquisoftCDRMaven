@@ -4,8 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.net.URL;
-import java.net.URLDecoder;
+//import java.net.URL;
+//import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,8 +15,9 @@ import java.util.List;
 
 import Entities.CDR;
 import Gateways.PersistenciaCDR;
+import Gateways.PersistenciaLinea;
 
-
+ 
 public class PersistenciaCDRArchivo implements PersistenciaCDR{
 	public void guardarCDR(CDR cdr,int id_tarificacion) {
 		try {
@@ -29,12 +30,12 @@ public class PersistenciaCDRArchivo implements PersistenciaCDR{
 				fw = new FileWriter(f,true);
 				bw = new BufferedWriter(fw);
 				bw.newLine();
-				bw.write(cdr.getId()+"%"+cdr.getNumeroLlamante() + "%" + cdr.getNumeroLlamado() + "%" + cdr.getHoraLlamada() + "%" + cdr.getDuracionLlamada() + "%" + cdr.getTarifa() + "%" + id_tarificacion);
+				bw.write(cdr.getId()+"%"+cdr.getNumeroLlamante() + "%" + cdr.getFecha() + "%" + cdr.getNumeroLlamado() + "%" + cdr.getHoraLlamada() + "%" + cdr.getDuracionLlamada() + "%" + cdr.getTarifa() + "%" + id_tarificacion);
 			}else {
 				fw = new FileWriter(f);
 				bw = new BufferedWriter(fw);
-				bw.write("id%telf_origen%telf_destino%HoraLlamada%DuracionLlamada%Tarifa%ID_Tarificacion\n");
-				bw.write(cdr.getId()+"%"+cdr.getNumeroLlamante() + "%" + cdr.getNumeroLlamado() + "%" + cdr.getHoraLlamada() + "%" + cdr.getDuracionLlamada() + "%" + cdr.getTarifa() + "%" + id_tarificacion);
+				bw.write("id%telf_origen%telf_destino%FechaLlamada%HoraLlamada%DuracionLlamada%Tarifa%ID_Tarificacion\n");
+				bw.write(cdr.getId()+"%"+cdr.getNumeroLlamante() + "%" + cdr.getFecha() + "%" + cdr.getNumeroLlamado() + "%" + cdr.getHoraLlamada() + "%" + cdr.getDuracionLlamada() + "%" + cdr.getTarifa() + "%" + id_tarificacion);
 			}
 			bw.close();
 			fw.close(); 
@@ -59,9 +60,10 @@ public class PersistenciaCDRArchivo implements PersistenciaCDR{
 				cdr.setId(id);
 				cdr.setNumeroLlamante(contacto[1]);
 				cdr.setNumeroLlamado(contacto[2]);
-				cdr.setHoraLlamada(Integer.parseInt(contacto[3]));
-				cdr.setDuracionLlamada(Float.parseFloat(contacto[4]));
-				
+				cdr.setFecha(contacto[3]);
+				cdr.setHoraLlamada(contacto[4]);
+				cdr.setDuracionLlamada(contacto[5]);
+				cdr.setTarifa(Double.parseDouble(contacto[6]));
 				br.close();
 			}
 			
@@ -92,7 +94,9 @@ public class PersistenciaCDRArchivo implements PersistenciaCDR{
 		}
 		return id;
 	}
-	public void saveFromArchive(String archive,int id_t) {
+	public int saveFromArchive(String archive,int id_t) {
+		int count=0;
+		PersistenciaLinea persis=new PersistenciaLineaSql();
 		try {
 			File f = new File(archive);
 			if(f.exists()) {
@@ -103,13 +107,15 @@ public class PersistenciaCDRArchivo implements PersistenciaCDR{
 				linea = br.readLine();//firstline
 				String [] contacto;
 				while(linea != null) {
+					count=count+1;
 					contacto = linea.split(",");
 					CDR cdr = new CDR();
 					cdr.setNumeroLlamante(contacto[0]);
 					cdr.setNumeroLlamado(contacto[1]);
-					//aqui fecha
-					cdr.setHoraLlamada(Integer.parseInt(contacto[3]));
-					cdr.setDuracionLlamada(Float.parseFloat(contacto[4]));
+					cdr.setFecha(contacto[2]);
+					cdr.setHoraLlamada(contacto[3]);
+					cdr.setDuracionLlamada(contacto[4]);
+						cdr.calcularTarifaParaLinea(persis.getLinea(contacto[0]));
 					guardarCDR(cdr,id_t);
 					linea = br.readLine();
 				}
@@ -119,6 +125,7 @@ public class PersistenciaCDRArchivo implements PersistenciaCDR{
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+		return count;
 	}
 	public List<CDR> getCDRSbyTarificationId(int id) {
 		List<CDR> lista=new ArrayList<CDR>();
@@ -133,16 +140,16 @@ public class PersistenciaCDRArchivo implements PersistenciaCDR{
 				
 				while(linea != null) {
 					String [] contacto = linea.split("%");
-					System.out.println(contacto[6]);
-					if((Integer.parseInt(contacto[6]))==id) {
+					System.out.println(contacto[7]);
+					if((Integer.parseInt(contacto[7]))==id) {
 						CDR cdr = new CDR();
 						cdr.setId(Integer.parseInt(contacto[0]));
 						cdr.setNumeroLlamante(contacto[1]);
 						cdr.setNumeroLlamado(contacto[2]);
-						//aqui fecha
-						cdr.setHoraLlamada(Integer.parseInt(contacto[3]));
-						cdr.setDuracionLlamada(Float.parseFloat(contacto[4]));
-						cdr.setTarifa(Double.parseDouble(contacto[5]));
+						cdr.setFecha(contacto[3]);
+						cdr.setHoraLlamada(contacto[4]);
+						cdr.setDuracionLlamada(contacto[5]);
+						cdr.setTarifa(Double.parseDouble(contacto[6]));
 						lista.add(cdr);
 					}
 					linea = br.readLine();

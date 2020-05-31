@@ -6,41 +6,45 @@ public class CDR {
 	int id=0;
 	private String telf_origen;
 	private String telf_destino;
-
-	private int horaLlamada = 0;
-	private double duracionLlamada= 0;
+	private String fecha="01-01-2020";
+	private String horaLlamada = "00:00";
+	private String duracionLlamada= "00:00";
 	private double tarifa;
 	
 	public CDR() { 
 		telf_origen="0000";
 		telf_destino="1111";
-		horaLlamada = 0;
-		duracionLlamada= 0.0;
+		horaLlamada = "00:00";
+		duracionLlamada= "00:00";
 	}
 	
-	public CDR(String numeroLlamante, String numeroLlamado,int horaLlamada,double duracionLlamada) {
+	public CDR(String numeroLlamante, String numeroLlamado,String fecha,String horaLlamada,String duracionLlamada) {
 		//this.id=ID_GENERATOR.getAndIncrement();
 		this.telf_origen=numeroLlamante;
 		this.telf_destino=numeroLlamado;
+		this.fecha=fecha;
 		this.horaLlamada=horaLlamada;
 		this.duracionLlamada=duracionLlamada;
 	}
 	
-	public double calcularTarifaParaLinea(Linea linea) {
-		tarifa=duracionLlamada*linea.getTarifaMinuto(this);
-		return tarifa;
+	public void calcularTarifaParaLinea(Linea linea) {
+		String[] duracion=this.duracionLlamada.split(":");
+		int minutos=Integer.parseInt(duracion[0]);
+		double segundos=Integer.parseInt(duracion[1])/60;
+		double tarifaMinuto=linea.getTarifaMinuto(this);
+		this.tarifa=(tarifaMinuto*minutos)+(tarifaMinuto*segundos);
 	}
 	
-	public void setHoraLlamada(int horaLlamada) {
+	public void setHoraLlamada(String horaLlamada) {
 		this.horaLlamada=horaLlamada;
 	}
-	public int getHoraLlamada() {
+	public String getHoraLlamada() {
 		return horaLlamada;
 	}
-	public void setDuracionLlamada(double tiempoLlamada) {
+	public void setDuracionLlamada(String tiempoLlamada) {
 		this.duracionLlamada=tiempoLlamada;
 	}
-	public double getDuracionLlamada() {
+	public String getDuracionLlamada() {
 		return duracionLlamada;
 	}
 	public void setNumeroLlamante(String numeroLlamante) {
@@ -66,5 +70,11 @@ public class CDR {
 	}
 	public int getId() {
 		return this.id;
+	}
+	public void setFecha(String Fecha) {
+		this.fecha=Fecha;
+	}
+	public String getFecha() {
+		return this.fecha;
 	}
 }
