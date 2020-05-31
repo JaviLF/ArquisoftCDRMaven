@@ -3,6 +3,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import Entities.CDR;
+import Entities.Linea;
+import Entities.Plan;
+import Entities.PlanPostpago;
+import Entities.PlanPrepago;
+import Entities.PlanWow;
+
 class CDRTest {
 
 	@Test
