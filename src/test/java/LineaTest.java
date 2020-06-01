@@ -3,6 +3,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import Entities.Linea;
+import Entities.Plan;
+import Entities.PlanPrepago;
+import Entities.PlanWow;
+
 class LineaTest {
 
 	@Test
