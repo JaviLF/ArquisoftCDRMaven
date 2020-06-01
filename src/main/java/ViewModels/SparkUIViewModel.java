@@ -3,8 +3,16 @@ package ViewModels;
 
 import static spark.Spark.*;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.http.Part;
 
 import Entities.CDR;
 import Entities.Linea;
@@ -35,6 +43,43 @@ public class SparkUIViewModel implements UiPresenter{
 	           return new ModelAndView(viewObjects, "home.ftl");
 	        }, new FreeMarkerEngine());
 		
+		 post("/uploadLinea", "multipart/form-data", (request, response) -> {
+				//- Servlet 3.x config
+				String location = "/aaa/bbb";  // the directory location where files will be stored
+				long maxFileSize = 100000000;  // the maximum size allowed for uploaded files
+				long maxRequestSize = 100000000;  // the maximum size allowed for multipart/form-data requests
+				int fileSizeThreshold = 1024;  // the size threshold after which files will be written to disk
+				MultipartConfigElement multipartConfigElement = new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold);
+				request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
+				//-/
+				
+				Collection<Part> parts = request.raw().getParts();
+				for(Part part : parts) {
+					System.out.println("Name:");
+					System.out.println(part.getName());
+					System.out.println("Size: ");
+					System.out.println(part.getSize());
+					System.out.println("Filename:");
+					System.out.println(part.getSubmittedFileName());
+				}
+				  
+				String fName = request.raw().getPart("upfile").getSubmittedFileName();
+				System.out.println("File: "+fName);
+				
+				
+				Part uploadedFile = request.raw().getPart("upfile");
+				Path out = Paths.get("/aaa/bbb/"+fName);
+				try (final InputStream in = uploadedFile.getInputStream()) {
+					Files.copy(in, out);
+					uploadedFile.delete();
+				}
+				// cleanup
+				multipartConfigElement = null;
+				parts = null;
+				uploadedFile = null;
+				
+				return "redirect:/";
+			});
 		post("/addCDR", (request, response) -> addCDR());
 		post("/addLinea", (request, response) -> addLinea());
 		post("/SaveLinea",(request, response) ->{

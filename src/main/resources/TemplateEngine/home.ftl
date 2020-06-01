@@ -21,26 +21,16 @@
           <li>
           	<div class="input-group">
 			  <div class="input-group-prepend">
-			    <span data-toggle="tab" href="#menu1">Cargar Lineas Telefonicas</span>
+			    <span  data-toggle="tab" href="#menu1">Cargar Lineas Telefonicas</span>
 			  </div>
-			  <div class="custom-file">
-			    <input type="file" class="custom-file-input" id="inputGroupFile01"
-			      aria-describedby="inputGroupFileAddon01">
-			    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-			  </div>
+		
 			</div>
           </li>
           <li>
           	<div class="input-group">
 			  <div class="input-group-prepend">
 			    <span data-toggle="tab" href="#menu2">Cargar CDR</span>
-			  </div>
-			  <div class="custom-file">
-			    <input type="file" class="custom-file-input" id="inputGroupFile01"
-			      aria-describedby="inputGroupFileAddon01">
-			    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-			 	 </div>
-				</div>
+			 
 			</li>
         </ul>
       </li>
@@ -58,7 +48,13 @@
 </nav>
  <div class="tab-content">
     <div id="menu1" class="tab-pane fade">
-      <h3>Menu 1</h3>
+      	<h3>Cargar Linea</h3>
+		<form action="/uploadLinea" enctype="multipart/form-data" method="post">
+			
+			<label for="upfile">Selecciona archivo</label>
+			<input type="file" name="upfile"><br>
+			<input type="submit" value="Cargar">
+		</form>
     </div>
     <div id="menu2" class="tab-pane fade">
       <h3>Menu 2</h3>
