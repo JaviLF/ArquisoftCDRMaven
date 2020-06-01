@@ -24,12 +24,15 @@ class UseCasesTest {
 		AgregarTarificacionUseCase agreT = new AgregarTarificacionUseCase();
 		Tarificacion tarificacion=new Tarificacion("31-5-2020","archivo");
 		agreT.agregarTarificacion(tarificacion);
-		ObtenerTarificacionesUseCase obtT=new ObtenerTarificacionesUseCase();
-		tarificacion=obtT.obtenerTarificaciones().get(0);
+		//ObtenerTarificacionesUseCase obtT=new ObtenerTarificacionesUseCase();
+		//tarificacion=obtT.obtenerTarificaciones().get(0);
 		AgregarCDRDesdeArchivoUseCase aggC=new AgregarCDRDesdeArchivoUseCase();
 		assertEquals(6,aggC.agregarCDRDesdeArchivo("ejemplo_entrada_cdrs.txt", persistencia, tarificacion.getId()));
 		
-		
+		persistencia= selecP.seleccionarPersistencia("sql");
+		tarificacion=new Tarificacion("31-5-2020","sql");
+		agreT.agregarTarificacion(tarificacion);
+		assertEquals(6,aggC.agregarCDRDesdeArchivo("ejemplo_entrada_cdrs.txt", persistencia, tarificacion.getId()));
 	}
 	/*@Test
 	void AgregarCDRDesdeArchivoTest() {

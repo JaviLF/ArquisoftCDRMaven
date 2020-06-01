@@ -12,6 +12,7 @@ import java.util.List;
 
 import Entities.CDR;
 import Gateways.PersistenciaCDR;
+import Gateways.PersistenciaLinea;
  
 
 public class PersistenciaCDRSql implements PersistenciaCDR{
@@ -68,6 +69,7 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 	       System.exit(0);
 	    }
+	    cdr.setId(getLastId());
 	}
 	public CDR getCDR(int id) {
 		Connection c = null;
@@ -110,7 +112,7 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 		   }
 	    return cdr;
 	}
-	public int getNextId(){
+	public int getLastId(){
 		int id=1;
 		Connection c = null;
 	    Statement stmt1 = null;
@@ -122,8 +124,7 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 
 		      stmt1 = c.createStatement();
 		      ResultSet rs = stmt1.executeQuery( "SELECT * FROM CDR WHERE ID = (SELECT MAX(ID) FROM CDR);" );
-		      id=rs.getInt("id");
-		      id=id+1;
+		      id=rs.getInt("ID");
 		      rs.close();
 		      stmt1.close();
 		      c.close();
@@ -155,6 +156,39 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 					cdr.setFecha(contacto[2]);
 					cdr.setHoraLlamada(contacto[3]);
 					cdr.setDuracionLlamada(contacto[4]);
+					guardarCDR(cdr,id_t);
+					linea = br.readLine();
+				}
+				br.close();
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return count;
+	}
+	public int saveAndTarifyFromArchive(String archive,int id_t) {
+		int count=0;
+		PersistenciaLinea persis=new PersistenciaLineaSql();
+		try {
+			File f = new File(archive);
+			if(f.exists()) {
+				FileReader fr = new FileReader(f);
+				BufferedReader br = new BufferedReader(fr);
+				String linea;
+				linea = br.readLine();//header
+				linea = br.readLine();//firstline
+				String [] contacto;
+				while(linea != null) {
+					count=count+1;
+					contacto = linea.split(",");
+					CDR cdr = new CDR();
+					cdr.setNumeroLlamante(contacto[0]);
+					cdr.setNumeroLlamado(contacto[1]);
+					cdr.setFecha(contacto[2]);
+					cdr.setHoraLlamada(contacto[3]);
+					cdr.setDuracionLlamada(contacto[4]);
+						cdr.calcularTarifaParaLinea(persis.getLinea(contacto[0]));
 					guardarCDR(cdr,id_t);
 					linea = br.readLine();
 				}

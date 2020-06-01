@@ -13,44 +13,46 @@ import Entities.PlanPostpago;
 import Entities.PlanPrepago;
 import Entities.PlanWow;
 import Gateways.PersistenciaLinea;
-
+ 
 public class PersistenciaLineaArchivo implements PersistenciaLinea{
 	public void guardarLinea(Linea linea) {
-		try {
-			File f = new File("lineas.txt");
-			FileWriter fw;
-			BufferedWriter bw;
-			String datosLinea=linea.getNumero()+"%"+linea.getNombreUsuario()+"%"+linea.getPlan().getId();
-			if(linea.getPlan().getId()==3) {
-				for(int i=0;i<4;i++) {
-					System.out.println(linea.getNumerosAmigos().size());
-					if(i<linea.getNumerosAmigos().size()) {
-						datosLinea=datosLinea+"%";
-						datosLinea=datosLinea+(linea.getNumerosAmigos().get(i));
-					} else {
-						datosLinea=datosLinea+"%"+null;
+		if(!exists(linea.getNumero())) {
+			try {
+				File f = new File("lineas.txt");
+				FileWriter fw;
+				BufferedWriter bw;
+				String datosLinea=linea.getNumero()+"%"+linea.getNombreUsuario()+"%"+linea.getPlan().getId();
+				if(linea.getPlan().getId()==3) {
+					for(int i=0;i<4;i++) {
+						System.out.println(linea.getNumerosAmigos().size());
+						if(i<linea.getNumerosAmigos().size()) {
+							datosLinea=datosLinea+"%";
+							datosLinea=datosLinea+(linea.getNumerosAmigos().get(i));
+						} else {
+							datosLinea=datosLinea+"%"+null;
+						}
 					}
+					System.out.println(datosLinea);
 				}
-				System.out.println(datosLinea);
+				else {
+					datosLinea=datosLinea+"%"+null+"%"+null+"%"+null+"%"+null;
+				}
+				if(f.exists()){
+					fw = new FileWriter(f,true);
+					bw = new BufferedWriter(fw);
+					bw.newLine();
+					bw.write(datosLinea);
+				}else {
+					fw = new FileWriter(f);
+					bw = new BufferedWriter(fw);
+					bw.write("TELEFONO%PROPIETARIO%PLAN%NUMERO_AMIGO_1%NUMERO_AMIGO_2%NUMERO_AMIGO_3%NUMERO_AMIGO_4\n");
+					bw.write(datosLinea);
+				}
+				bw.close();
+				fw.close(); 
+			} catch (Exception e) {
+				System.out.println(e);
 			}
-			else {
-				datosLinea=datosLinea+"%"+null+"%"+null+"%"+null+"%"+null;
-			}
-			if(f.exists()){
-				fw = new FileWriter(f,true);
-				bw = new BufferedWriter(fw);
-				bw.newLine();
-				bw.write(datosLinea);
-			}else {
-				fw = new FileWriter(f);
-				bw = new BufferedWriter(fw);
-				bw.write("TELEFONO%PROPIETARIO%PLAN%NUMERO_AMIGO_1%NUMERO_AMIGO_2%NUMERO_AMIGO_3%NUMERO_AMIGO_4\n");
-				bw.write(datosLinea);
-			}
-			bw.close();
-			fw.close(); 
-		} catch (Exception e) {
-			System.out.println(e);
 		}
 	}
 	public Linea getLinea(String numero) {
@@ -73,12 +75,6 @@ public class PersistenciaLineaArchivo implements PersistenciaLinea{
 					if(Integer.parseInt(contacto[0])==Integer.parseInt(numero))
 						found=true;
 				}
-				/*do { //find Linea
-					line = br.readLine();
-					System.out.println(line);
-					contacto = line.split("%");	
-				}while(contacto[0]!=numero);*/
-				
 				linea.setNumero(contacto[0]);
 				linea.setNombreUsuario(contacto[1]);
 				PlanFactory factory=new PlanFactory();
@@ -134,5 +130,33 @@ public class PersistenciaLineaArchivo implements PersistenciaLinea{
 			System.out.println(e);
 		}
 		return count;
+	}
+	public boolean exists(String numero) {
+		boolean resp=false;
+		try {
+			File f = new File("lineas.txt");
+			if(f.exists()) {
+				FileReader fr = new FileReader(f);
+				BufferedReader br = new BufferedReader(fr);
+				String line;
+				
+				line = br.readLine();//skip header
+				line = br.readLine();//get first line
+				while(line!=null) {
+					String [] contacto=line.split("%");
+					if(Integer.parseInt(contacto[0])==Integer.parseInt(numero)) {
+						resp=true;
+						line=null;
+					}else {
+						line = br.readLine();
+					}
+				}
+				br.close();
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return resp;
 	}
 }

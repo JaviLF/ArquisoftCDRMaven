@@ -21,7 +21,7 @@ import Gateways.PersistenciaLinea;
 public class PersistenciaCDRArchivo implements PersistenciaCDR{
 	public void guardarCDR(CDR cdr,int id_tarificacion) {
 		try {
-			int id=getNextId();
+			int id=getLastId()+1;
 			cdr.setId(id);
 			File f = new File("cdrs.txt");
 			FileWriter fw;
@@ -72,8 +72,8 @@ public class PersistenciaCDRArchivo implements PersistenciaCDR{
 		}
 		return cdr;
 	}
-	public int getNextId(){
-		int id=1;
+	public int getLastId(){
+		int id=0;
 		try {
 			File f = new File("cdrs.txt");
 			if(f.exists()) {
@@ -83,8 +83,9 @@ public class PersistenciaCDRArchivo implements PersistenciaCDR{
 				linea = br.readLine();//skip header and other CDRs
 				linea = br.readLine();//next line
 				while(linea != null) {
-					linea = br.readLine();
 					id=id+1;
+					linea = br.readLine();
+					
 				}
 				br.close();
 			}
@@ -95,6 +96,37 @@ public class PersistenciaCDRArchivo implements PersistenciaCDR{
 		return id;
 	}
 	public int saveFromArchive(String archive,int id_t) {
+		int count=0;
+		try {
+			File f = new File(archive);
+			if(f.exists()) {
+				FileReader fr = new FileReader(f);
+				BufferedReader br = new BufferedReader(fr);
+				String linea;
+				linea = br.readLine();//header
+				linea = br.readLine();//firstline
+				String [] contacto;
+				while(linea != null) {
+					count=count+1;
+					contacto = linea.split(",");
+					CDR cdr = new CDR();
+					cdr.setNumeroLlamante(contacto[0]);
+					cdr.setNumeroLlamado(contacto[1]);
+					cdr.setFecha(contacto[2]);
+					cdr.setHoraLlamada(contacto[3]);
+					cdr.setDuracionLlamada(contacto[4]);
+					guardarCDR(cdr,id_t);
+					linea = br.readLine();
+				}
+				br.close();
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return count;
+	}
+	public int saveAndTarifyFromArchive(String archive,int id_t) {
 		int count=0;
 		PersistenciaLinea persis=new PersistenciaLineaSql();
 		try {

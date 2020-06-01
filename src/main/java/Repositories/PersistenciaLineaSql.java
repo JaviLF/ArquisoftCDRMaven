@@ -48,45 +48,47 @@ public class PersistenciaLineaSql implements PersistenciaLinea{
 	}
 	public void guardarLinea(Linea linea) {
 		this.createTable();
-		Connection c = null;
-	    Statement stmt = null;
-	    try {
-	       Class.forName("org.sqlite.JDBC");
-	       c = DriverManager.getConnection("jdbc:sqlite:test.db");
-	       c.setAutoCommit(false);
-	       System.out.println("Opened database successfully");
-
-	       stmt = c.createStatement();
-	       String values;
-	       if(linea.getPlan().getId()!=3) {
-	    	   values="VALUES ("+linea.getNumero()+",'"+linea.getNombreUsuario()+"',"+linea.getPlan().getId()+","+null+","+null+","+null+","+null+");";
-	       }else {
-	    	   values="VALUES ("+linea.getNumero()+",'"+linea.getNombreUsuario()+"',"+linea.getPlan().getId();
-	    	   List<String>numeros=linea.getNumerosAmigos();
-	    	   
-	    	   System.out.println(numeros.size());
-	    	   for(int i=0;i<numeros.size();i++) { //concatenamos el campo de numeros amigos de la linea
-	    		   values=values.concat(",");
-	    		   values=values.concat(numeros.get(i));
-	    	   }
-	    	   while(numeros.size()<4) {	//completamos a 4 si la lista no tiene 4 elementos
-	    		   numeros.add(null);
-	    		   values=values.concat(",");
-	    		   values=values+null;
-	    	   }
-	    	   values=values.concat(");");
-	    	   
-	       }
-	       String sql = "INSERT INTO LINEA (TELEFONO,PROPIETARIO,PLAN,NUMERO_AMIGO_1,NUMERO_AMIGO_2,NUMERO_AMIGO_3,NUMERO_AMIGO_4) " + values;
-	       System.out.println(sql);
-	       stmt.executeUpdate(sql);
-	       stmt.close();
-	       c.commit();
-	       c.close();
-	    } catch ( Exception e ) {
-	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-	       System.exit(0);
-	    }
+		if(exists(linea.getNumero())==false) {
+			Connection c = null;
+		    Statement stmt = null;
+		    try {
+		       Class.forName("org.sqlite.JDBC");
+		       c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		       c.setAutoCommit(false);
+		       System.out.println("Opened database successfully");
+	
+		       stmt = c.createStatement();
+		       String values;
+		       if(linea.getPlan().getId()!=3) {
+		    	   values="VALUES ("+linea.getNumero()+",'"+linea.getNombreUsuario()+"',"+linea.getPlan().getId()+","+null+","+null+","+null+","+null+");";
+		       }else {
+		    	   values="VALUES ("+linea.getNumero()+",'"+linea.getNombreUsuario()+"',"+linea.getPlan().getId();
+		    	   List<String>numeros=linea.getNumerosAmigos();
+		    	   
+		    	   System.out.println(numeros.size());
+		    	   for(int i=0;i<numeros.size();i++) { //concatenamos el campo de numeros amigos de la linea
+		    		   values=values.concat(",");
+		    		   values=values.concat(numeros.get(i));
+		    	   }
+		    	   while(numeros.size()<4) {	//completamos a 4 si la lista no tiene 4 elementos
+		    		   numeros.add(null);
+		    		   values=values.concat(",");
+		    		   values=values+null;
+		    	   }
+		    	   values=values.concat(");");
+		    	   
+		       }
+		       String sql = "INSERT INTO LINEA (TELEFONO,PROPIETARIO,PLAN,NUMERO_AMIGO_1,NUMERO_AMIGO_2,NUMERO_AMIGO_3,NUMERO_AMIGO_4) " + values;
+		       System.out.println(sql);
+		       stmt.executeUpdate(sql);
+		       stmt.close();
+		       c.commit();
+		       c.close();
+		    } catch ( Exception e ) {
+		       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		       System.exit(0);
+		    }
+		}
 	}
 	public Linea getLinea(String numero) {
 		Connection c = null;
@@ -136,11 +138,12 @@ public class PersistenciaLineaSql implements PersistenciaLinea{
 		      System.exit(0);
 		   }
 	    return linea;
-	}
+	} 
 	public int saveFromArchive(String archive) {
 		int count=0;
 		try {
 			File f = new File(archive);
+
 			if(f.exists()) {
 				FileReader fr = new FileReader(f);
 				BufferedReader br = new BufferedReader(fr);
@@ -172,5 +175,34 @@ public class PersistenciaLineaSql implements PersistenciaLinea{
 			System.out.println(e);
 		}
 		return count;
+	}
+	public boolean exists(String numero) {
+		boolean resp=false;
+		Connection c = null;
+	    Statement stmt = null;
+	   
+	    try {
+		      Class.forName("org.sqlite.JDBC");
+		      c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		      c.setAutoCommit(false);
+		      System.out.println("Opened database successfully");
+
+		      stmt = c.createStatement();
+		      ResultSet rs = stmt.executeQuery( "SELECT * FROM LINEA;" );
+		      
+		      while ( rs.next() ) {
+		    	  if(Integer.parseInt(rs.getString("TELEFONO"))==Integer.parseInt(numero)) {
+		    		  resp=true;
+		    	  }
+		      }
+		      rs.close();
+		      stmt.close();
+		      c.close();
+		   } catch ( Exception e ) {
+		      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		      System.exit(0);
+		   }
+	    
+		return resp;
 	}
 }

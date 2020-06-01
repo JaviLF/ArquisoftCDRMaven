@@ -1,5 +1,8 @@
 package Repositories;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -55,6 +58,7 @@ public class PersistenciaTarificacionSql implements PersistenciaTarificacion{
 	       stmt.close();
 	       c.commit();
 	       c.close();
+	       tarificacion.setId(getLastId());
 	    } catch ( Exception e ) {
 	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 	       System.exit(0);
@@ -132,5 +136,26 @@ public class PersistenciaTarificacionSql implements PersistenciaTarificacion{
 		   }
 	    return tarificacion;
 	}
-	
+	public int getLastId(){
+		int id=1;
+		Connection c = null;
+	    Statement stmt1 = null;
+	    try {
+		      Class.forName("org.sqlite.JDBC");
+		      c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		      c.setAutoCommit(false);
+		      System.out.println("Opened database successfully");
+
+		      stmt1 = c.createStatement();
+		      ResultSet rs = stmt1.executeQuery( "SELECT * FROM TARIFICACION WHERE ID = (SELECT MAX(ID) FROM TARIFICACION);" );
+		      id=rs.getInt("id");
+		      rs.close();
+		      stmt1.close();
+		      c.close();
+		   } catch ( Exception e ) {
+		      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		      System.exit(0);
+		   }
+		return id;
+	}
 }
