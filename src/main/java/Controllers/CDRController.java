@@ -1,10 +1,6 @@
-//<<<<<<< HEAD:src/main/java/ViewModels/SparkUiViewModel.java
-package ViewModels;
+package Controllers;
 
-import static spark.Spark.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import static spark.Spark.post;
 
 import Entities.CDR;
 import Entities.Linea;
@@ -18,38 +14,13 @@ import Presenters.UiPresenter;
 import Repositories.PersistenciaCDRSql;
 import Repositories.PersistenciaLineaSql;
 
-import TemplateEngine.FreeMarkerEngine;
-import spark.ModelAndView;
-  
-//import spark.template.velocity.VelocityTemplateEngine;
+public class CDRController implements UiPresenter {
 
-public class SparkUIViewModel implements UiPresenter{
-
+	@Override
 	public void main() {
+post("/addCDR", (request, response) -> addCDR());
 		PersistenciaCDR cdrs= new PersistenciaCDRSql();
 		PersistenciaLinea lineas= new PersistenciaLineaSql();
-		
-		 get("/", (request, response) -> {
-	           Map<String, Object> viewObjects = new HashMap<String, Object>();
-	           viewObjects.put("title", "Welcome to Spark Project");
-	           return new ModelAndView(viewObjects, "home.ftl");
-	        }, new FreeMarkerEngine());
-		
-		post("/addCDR", (request, response) -> addCDR());
-		post("/addLinea", (request, response) -> addLinea());
-		post("/SaveLinea",(request, response) ->{
-			String telf=request.queryParams("telefono");
-			String usuario=request.queryParams("usuario");
-			String tipoPlan=request.queryParams("tipo");
-			Plan plan=new PlanPrepago();
-			if(Integer.parseInt(tipoPlan)==2)
-				plan=new PlanPostpago();
-			if(Integer.parseInt(tipoPlan)==3)
-				plan=new PlanWow();
-			Linea linea=new Linea(telf,usuario,plan);
-			lineas.guardarLinea(linea);
-			return addCDR();
-		});
 		post("/SaveCDR",(request, response) ->{
 			String telf_origen=request.queryParams("telf_origen");
 			String telf_destino=request.queryParams("telf_destino");
@@ -82,33 +53,8 @@ public class SparkUIViewModel implements UiPresenter{
 			persis.guardarCDR(cdr,1);
 			return mostrarTarificado(cdr.getId());
 		});
+		
 	}
-	
-	
-	
-	public static String addLinea() {
-		return "<html>"
-				+ "<body>"
-					+ "<form method='post' action='/SaveLinea'>"//
-					+ "<label>telefono:</label>"
-					+ "<input type='text' name='telefono'>"
-					+ "<br/>"
-					+ "<label>Usuario:</label>"
-					+ "<input type='text' name='usuario'>"
-					+ "<br/>"
-					+ "<b>Tipo:</b>"
-					+ "<select name='tipo'  id='tipo'>"
-                    +"<option value='3'>Plan Wow</option>"
-                    +"<option value='1'>Plan PrePago</option>"
-                    +"<option value='2'>Plan PostPago</option>"
-                    +"</select>"
-					+ "<br/>"
-					+ "<input type='submit' value='Guardar Linea'"
-				+ "</body>"
-			+ "</html>";
-	}
-	
-	
 	private static String mostrarTarificado(int id) {
 		PersistenciaCDR persis=new PersistenciaCDRSql();
 		CDR cdr=persis.getCDR(id);
@@ -155,4 +101,5 @@ public class SparkUIViewModel implements UiPresenter{
 				+ "</body>"
 			+ "</html>";
 	}
+
 }

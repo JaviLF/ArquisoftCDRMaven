@@ -2,6 +2,7 @@ package Repositories;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -139,10 +140,10 @@ public class PersistenciaLineaSql implements PersistenciaLinea{
 		   }
 	    return linea;
 	} 
-	public int saveFromArchive(String archive) {
+	public int saveFromArchive(Path archive) {
 		int count=0;
 		try {
-			File f = new File(archive);
+			File f = archive.toFile();
 
 			if(f.exists()) {
 				FileReader fr = new FileReader(f);

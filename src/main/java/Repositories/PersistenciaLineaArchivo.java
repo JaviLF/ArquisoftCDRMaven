@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.file.Path;
 
 import Entities.CDR;
 import Entities.Linea;
@@ -94,10 +95,10 @@ public class PersistenciaLineaArchivo implements PersistenciaLinea{
 		}
 		return linea;
 	}
-	public int saveFromArchive(String archive) {
+	public int saveFromArchive(Path archive) {
 		int count=0;
 		try {
-			File f = new File(archive);
+			File f = archive.toFile();
 			if(f.exists()) {
 				FileReader fr = new FileReader(f);
 				BufferedReader br = new BufferedReader(fr);
