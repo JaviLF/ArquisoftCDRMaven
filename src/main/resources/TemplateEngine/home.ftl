@@ -7,6 +7,22 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+		    $('#open').on('click', function(){
+		        $('#popup').fadeIn('slow');
+		        $('.popup-overlay').fadeIn('slow');
+		        $('.popup-overlay').height($(window).height());
+		        return false;
+		    });
+		
+		    $('#close').on('click', function(){
+		        $('#popup').fadeOut('slow');
+		        $('.popup-overlay').fadeOut('slow');
+		        return false;
+		    });
+		});
+	</script>
 </head>
 <body>
 
@@ -16,12 +32,12 @@
       <b class="navbar-brand" href="#">CLARO</b>
     </div>
     <ul class="nav navbar-nav">
-     <li class="active" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Cargar Archivos <span class="caret"></span></a>
+     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Cargar Archivos <span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li>
           	<div class="input-group">
 			  <div class="input-group-prepend">
-			    <span  data-toggle="tab" href="#menu1">Cargar Lineas Telefonicas</span>
+			    <span class="active" data-toggle="tab" href="#menu1">Cargar Lineas Telefonicas</span>
 			  </div>
 		
 			</div>
@@ -47,13 +63,14 @@
   </div>
 </nav>
  <div class="tab-content">
-    <div id="menu1" class="tab-pane fade">
+    <div id="menu1" class="tab-pane fade in active">
       	<h3>Cargar Linea</h3>
 		<form action="/uploadLinea" enctype="multipart/form-data" method="post">
 			
 			<label for="upfile">Selecciona archivo</label>
 			<input type="file" name="upfile"><br>
-			<input type="submit" value="Cargar">
+			<input class="btn btn-primary" id="open" type="submit" value="Cargar">
+			
 		</form>
     </div>
     <div id="menu2" class="tab-pane fade">
@@ -77,5 +94,15 @@
     </div>
   </div>
 </div>
+<div id="popup" style="display: none;">
+    <div class="content-popup">
+        <div class="close"><a href="#" id="close"><img src="images/close.png"/></a></div>
+        	<div>
+                <h2>Archivo Cargado Exitosamente!</h2>
+    		</div>
+        </div>
+    </div>
+</div>
+<div class="popup-overlay"></div>
 </body>
 </html>
