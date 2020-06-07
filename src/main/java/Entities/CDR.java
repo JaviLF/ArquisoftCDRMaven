@@ -1,5 +1,6 @@
 package Entities;
 
+import Gateways.PersistenciaCDR;
 
 public class CDR {
 	//private static AtomicInteger ID_GENERATOR = new AtomicInteger(1);
@@ -19,7 +20,6 @@ public class CDR {
 	}
 	
 	public CDR(String numeroLlamante, String numeroLlamado,String fecha,String horaLlamada,String duracionLlamada) {
-		//this.id=ID_GENERATOR.getAndIncrement();
 		this.telf_origen=numeroLlamante;
 		this.telf_destino=numeroLlamado;
 		this.fecha=fecha;
@@ -27,12 +27,16 @@ public class CDR {
 		this.duracionLlamada=duracionLlamada;
 	}
 	
-	public void calcularTarifaParaLinea(Linea linea) {
+	public void calcularTarifaSegunLinea(Linea linea) {
 		String[] duracion=this.duracionLlamada.split(":");
 		int minutos=Integer.parseInt(duracion[0]);
 		double segundos=Integer.parseInt(duracion[1])/60;
 		double tarifaMinuto=linea.getTarifaMinuto(this);
 		this.tarifa=(tarifaMinuto*minutos)+(tarifaMinuto*segundos);
+	}
+	
+	public void guardarCDR(PersistenciaCDR repository,int id_tarificacion) {
+		repository.guardarCDR(this, id_tarificacion);
 	}
 	
 	public void setHoraLlamada(String horaLlamada) {
@@ -47,16 +51,16 @@ public class CDR {
 	public String getDuracionLlamada() {
 		return duracionLlamada;
 	}
-	public void setNumeroLlamante(String numeroLlamante) {
+	public void setTelfOrigen(String numeroLlamante) {
 		this.telf_origen=numeroLlamante;
 	}
-	public String getNumeroLlamante() {
+	public String getTelfOrigen() {
 		return telf_origen;
 	}
-	public void setNumeroLlamado(String numeroLlamado) {
+	public void setTelfDestino(String numeroLlamado) {
 		this.telf_destino=numeroLlamado;
 	}
-	public String getNumeroLlamado() {
+	public String getTelfDestino() {
 		return telf_destino;
 	}
 	public void setTarifa(double tarifa) {

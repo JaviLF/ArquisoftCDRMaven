@@ -7,20 +7,21 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import Entities.Tarificacion;
 import Gateways.PersistenciaTarificacion;
 
-public class PersistenciaTarificacionSql implements PersistenciaTarificacion{
+public class TarificacionSqlRepository implements PersistenciaTarificacion{
 	public void createTable() {
 		Connection c = null;
 		Statement stmt = null;
 	    
 	    try {
 	       Class.forName("org.sqlite.JDBC");
-	       c = DriverManager.getConnection("jdbc:sqlite:test.db");
+	       c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 	       System.out.println("Opened database successfully");
 
 	       stmt = c.createStatement();
@@ -43,21 +44,22 @@ public class PersistenciaTarificacionSql implements PersistenciaTarificacion{
 		//tarificacion.setId(getNextId());
 		Connection c = null;
 	    Statement stmt = null;
-	   
+	    LocalDateTime now=LocalDateTime.now();
 	    try {
 	       Class.forName("org.sqlite.JDBC");
-	       c = DriverManager.getConnection("jdbc:sqlite:test.db");
+	       c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 	       c.setAutoCommit(false);
 	       System.out.println("Opened database successfully");
 	       stmt = c.createStatement();
 	       String sql = "INSERT INTO TARIFICACION (FECHA,TIPO) " +
-	                      "VALUES ('"+(tarificacion.getFecha().replace('-', 'a'))
+	                      "VALUES ('"+now.toString()
 	                      +"','"+tarificacion.getTipo()+"');";
 	       System.out.println(sql);
 	       stmt.executeUpdate(sql);
 	       stmt.close();
 	       c.commit();
 	       c.close();
+	       tarificacion.setFecha(now.toString());
 	       tarificacion.setId(getLastId());
 	    } catch ( Exception e ) {
 	       System.err.println( e.getClass().getName() + ": " + e.getMessage() );
@@ -71,7 +73,7 @@ public class PersistenciaTarificacionSql implements PersistenciaTarificacion{
 	    Tarificacion tarificacion=null;
 	    try {
 		      Class.forName("org.sqlite.JDBC");
-		      c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 		      c.setAutoCommit(false);
 		      System.out.println("Opened database successfully");
 
@@ -103,7 +105,7 @@ public class PersistenciaTarificacionSql implements PersistenciaTarificacion{
 	    Tarificacion tarificacion=null;
 	    try {
 		      Class.forName("org.sqlite.JDBC");
-		      c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 		      c.setAutoCommit(false);
 		      System.out.println("Opened database successfully");
 
@@ -119,13 +121,6 @@ public class PersistenciaTarificacionSql implements PersistenciaTarificacion{
 			      tarificacion.setTipo(tipo);
 			      tarificacion.setId(CDRid);
 			      
-			         /*System.out.println( "ID = " + id );
-			         System.out.println( "NUMEROLLAMANTE = " + name );
-			         System.out.println( "NUMEROLLAMADO = " + name2 );
-			         System.out.println( "HORALLAMADA = " + age );
-			         System.out.println( "DURACIONLLAMADA = " + address );
-			         System.out.println( "TARIFA = " + salary );
-			         System.out.println();*/
 		      }
 		      rs.close();
 		      stmt.close();
@@ -142,7 +137,7 @@ public class PersistenciaTarificacionSql implements PersistenciaTarificacion{
 	    Statement stmt1 = null;
 	    try {
 		      Class.forName("org.sqlite.JDBC");
-		      c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 		      c.setAutoCommit(false);
 		      System.out.println("Opened database successfully");
 

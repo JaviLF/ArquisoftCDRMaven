@@ -16,31 +16,31 @@ import Entities.PlanPrepago;
 import Entities.PlanWow;
 import Gateways.PersistenciaCDR;
 import Gateways.PersistenciaLinea;
-import Interactors.AgregarLineasDesdeArchivoUseCase;
+import Interactors.GuardarLineasUseCase;
 import Presenters.UiPresenter;
-import Repositories.PersistenciaCDRSql;
-import Repositories.PersistenciaLineaSql;
+import Repositories.CDRSqlRepository;
+import Repositories.LineaSqlRepository;
 
 public class LineaController implements UiPresenter {
-	PersistenciaCDR cdrs= new PersistenciaCDRSql();
-	PersistenciaLinea lineas= new PersistenciaLineaSql();
+	PersistenciaCDR cdrs= new CDRSqlRepository();
+	PersistenciaLinea lineas= new LineaSqlRepository();
 
 	@Override
 	public void main() {
 		post("/uploadLinea", "multipart/form-data", (request, response) -> {
-		 	AgregarLineasDesdeArchivoUseCase agregarLineasUseCase=new AgregarLineasDesdeArchivoUseCase();
+		 	GuardarLineasUseCase agregarLineasUseCase=new GuardarLineasUseCase();
 			//- Servlet 3.x config
 			String location = "/aaa/bbb";  
 			long maxFileSize = 100000000;  
 			long maxRequestSize = 100000000; 
-			int fileSizeThreshold = 1024; 
+			int fileSizeThreshold = 1024;  
 			MultipartConfigElement multipartConfigElement = new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold);
 			request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
 			Collection<Part> parts = request.raw().getParts();
 			String fName = request.raw().getPart("upfile").getSubmittedFileName();
 			Part uploadedFile = request.raw().getPart("upfile");
 			Path out = Paths.get(fName);
-			int lineasIngresadas=agregarLineasUseCase.agregarLineasDesdeArchivo(out);
+			//int lineasIngresadas=agregarLineasUseCase.agregarLineasDesdeArchivo(out);
 			response.redirect("/");
 			return null;
 		});
@@ -55,7 +55,7 @@ public class LineaController implements UiPresenter {
 			if(Integer.parseInt(tipoPlan)==3)
 				plan=new PlanWow();
 			Linea linea=new Linea(telf,usuario,plan);
-			lineas.guardarLinea(linea);
+			//lineas.guardarLinea(linea);
 			return addCDR();
 		});
 		

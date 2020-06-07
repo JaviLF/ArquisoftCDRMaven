@@ -2,6 +2,7 @@ package Repositories;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
 //import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,14 +16,14 @@ import Gateways.PersistenciaCDR;
 import Gateways.PersistenciaLinea;
  
 
-public class PersistenciaCDRSql implements PersistenciaCDR{
+public class CDRSqlRepository implements PersistenciaCDR{
 	public void createTable() {
 		Connection c = null;
 	      Statement stmt = null;
 	      
 	      try {
 	         Class.forName("org.sqlite.JDBC");
-	         c = DriverManager.getConnection("jdbc:sqlite:test.db");
+	         c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 	         System.out.println("Opened database successfully");
 
 	         stmt = c.createStatement();
@@ -46,18 +47,17 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 	}
 	public void guardarCDR(CDR cdr,int id_tarificacion) {
 		this.createTable();
-		//cdr.setId(getNextId());
 		Connection c = null;
 	    Statement stmt = null;
 	   
 	    try {
 	       Class.forName("org.sqlite.JDBC");
-	       c = DriverManager.getConnection("jdbc:sqlite:test.db");
+	       c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 	       c.setAutoCommit(false);
 	       System.out.println("Opened database successfully");
 	       stmt = c.createStatement();
 	       String sql = "INSERT INTO CDR (TELF_ORIGEN,TELF_DESTINO,FECHALLAMADA,HORALLAMADA,DURACIONLLAMADA,TARIFA,ID_TARIFICACION) " +
-	                      "VALUES ("+cdr.getNumeroLlamante()+","+cdr.getNumeroLlamado()+",'"
+	                      "VALUES ("+cdr.getTelfOrigen()+","+cdr.getTelfDestino()+",'"
 	                      +(cdr.getFecha().replace('-', 'a')) +"','"+(cdr.getHoraLlamada().replace(':', 'a')) 
 	                      +"','"+ (cdr.getDuracionLlamada().replace(':', 'a'))+"',"+cdr.getTarifa()+","+id_tarificacion+");";
 	       System.out.println(sql);
@@ -77,7 +77,7 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 	    CDR cdr=null;
 	    try {
 		      Class.forName("org.sqlite.JDBC");
-		      c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 		      c.setAutoCommit(false);
 		      System.out.println("Opened database successfully");
 
@@ -95,8 +95,8 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 		    	  String  duracion = rs.getString("DURACIONLLAMADA");
 		    	  System.out.println(duracion);
 			      double tarifa = rs.getDouble("TARIFA");
-			      cdr.setNumeroLlamante(telf_origen);
-			      cdr.setNumeroLlamado(telf_destino);
+			      cdr.setTelfOrigen(telf_origen);
+			      cdr.setTelfDestino(telf_destino);
 			      cdr.setFecha(fecha.replace('a', '-'));
 			      cdr.setHoraLlamada(hora.replace('a', ':'));
 			      cdr.setDuracionLlamada(duracion.replace('a', ':'));
@@ -118,7 +118,7 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 	    Statement stmt1 = null;
 	    try {
 		      Class.forName("org.sqlite.JDBC");
-		      c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 		      c.setAutoCommit(false);
 		      System.out.println("Opened database successfully");
 
@@ -134,6 +134,7 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 		   }
 		return id;
 	}
+	
 	
 	public int saveFromArchive(String archive,int id_t) {
 		int count=0;
@@ -151,8 +152,8 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 					contacto = linea.split(",");
 					CDR cdr = new CDR();
 					//cdr.setId(getNextId());
-					cdr.setNumeroLlamante(contacto[0]);
-					cdr.setNumeroLlamado(contacto[1]);
+					cdr.setTelfOrigen(contacto[0]);
+					cdr.setTelfDestino(contacto[1]);
 					cdr.setFecha(contacto[2]);
 					cdr.setHoraLlamada(contacto[3]);
 					cdr.setDuracionLlamada(contacto[4]);
@@ -167,11 +168,11 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 		}
 		return count;
 	}
-	public int saveAndTarifyFromArchive(String archive,int id_t) {
+	/*public int saveAndTarifyFromArchive(Path path,int id_t) {
 		int count=0;
-		PersistenciaLinea persis=new PersistenciaLineaSql();
+		PersistenciaLinea persis=new LineaSqlRepository();
 		try {
-			File f = new File(archive);
+			File f = path.toFile();
 			if(f.exists()) {
 				FileReader fr = new FileReader(f);
 				BufferedReader br = new BufferedReader(fr);
@@ -183,12 +184,12 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 					count=count+1;
 					contacto = linea.split(",");
 					CDR cdr = new CDR();
-					cdr.setNumeroLlamante(contacto[0]);
-					cdr.setNumeroLlamado(contacto[1]);
+					cdr.setTelfOrigen(contacto[0]);
+					cdr.setTelfDestino(contacto[1]);
 					cdr.setFecha(contacto[2]);
 					cdr.setHoraLlamada(contacto[3]);
 					cdr.setDuracionLlamada(contacto[4]);
-						cdr.calcularTarifaParaLinea(persis.getLinea(contacto[0]));
+						cdr.calcularTarifaSegunLinea(persis.getLineaByNumero(contacto[0]));
 					guardarCDR(cdr,id_t);
 					linea = br.readLine();
 				}
@@ -199,7 +200,9 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 			System.out.println(e);
 		}
 		return count;
-	}
+	}*/
+	
+	
 	public List<CDR> getCDRSbyTarificationId(int id) {
 		List<CDR> lista=new ArrayList<CDR>();
 		Connection c = null;
@@ -207,7 +210,7 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 	    CDR cdr=null;
 	    try {
 		      Class.forName("org.sqlite.JDBC");
-		      c = DriverManager.getConnection("jdbc:sqlite:test.db");
+		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
 		      c.setAutoCommit(false);
 		      System.out.println("Opened database successfully");
 
@@ -216,15 +219,57 @@ public class PersistenciaCDRSql implements PersistenciaCDR{
 		      
 		      while ( rs.next() ) {
 		    	  cdr=new CDR();
-		    	  int CDRid = rs.getInt("id");
+		    	  int CDRid = rs.getInt("ID");
 		    	  String  telf_origen = rs.getString("TELF_ORIGEN");
 		    	  String  telf_destino = rs.getString("TELF_DESTINO");
 		    	  String fecha = rs.getString("FECHALLAMADA");
 		    	  String hora  = rs.getString("HORALLAMADA");
 		    	  String  duracion = rs.getString("DURACIONLLAMADA");
 			      double tarifa = rs.getDouble("TARIFA");
-			      cdr.setNumeroLlamante(telf_origen);
-			      cdr.setNumeroLlamado(telf_destino);
+			      cdr.setTelfOrigen(telf_origen);
+			      cdr.setTelfDestino(telf_destino);
+			      cdr.setFecha(fecha.replace('a', '-'));
+			      cdr.setFecha(fecha.replace('a', '-'));
+			      cdr.setHoraLlamada(hora.replace('a', ':'));
+			      cdr.setDuracionLlamada(duracion.replace('a', ':'));
+			      cdr.setId(CDRid);
+			      cdr.setTarifa(tarifa);
+			      lista.add(cdr);
+		      }
+		      rs.close();
+		      stmt.close();
+		      c.close();
+		   } catch ( Exception e ) {
+		      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+		      System.exit(0);
+		   }
+	    return lista;
+	}
+	public List<CDR> getCDRSbyTelfOrigen(String telfOrigen) {
+		List<CDR> lista=new ArrayList<CDR>();
+		Connection c = null;
+	    Statement stmt = null;
+	    CDR cdr=null;
+	    try {
+		      Class.forName("org.sqlite.JDBC");
+		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
+		      c.setAutoCommit(false);
+		      System.out.println("Opened database successfully");
+
+		      stmt = c.createStatement();
+		      ResultSet rs = stmt.executeQuery( "SELECT * FROM CDR WHERE TELF_ORIGEN ="+telfOrigen+ ";" );
+		      
+		      while ( rs.next() ) {
+		    	  cdr=new CDR();
+		    	  int CDRid = rs.getInt("ID");
+		    	  String  telf_origen = rs.getString("TELF_ORIGEN");
+		    	  String  telf_destino = rs.getString("TELF_DESTINO");
+		    	  String fecha = rs.getString("FECHALLAMADA");
+		    	  String hora  = rs.getString("HORALLAMADA");
+		    	  String  duracion = rs.getString("DURACIONLLAMADA");
+			      double tarifa = rs.getDouble("TARIFA");
+			      cdr.setTelfOrigen(telf_origen);
+			      cdr.setTelfDestino(telf_destino);
 			      cdr.setFecha(fecha.replace('a', '-'));
 			      cdr.setFecha(fecha.replace('a', '-'));
 			      cdr.setHoraLlamada(hora.replace('a', ':'));

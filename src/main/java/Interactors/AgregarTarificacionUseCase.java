@@ -2,11 +2,11 @@ package Interactors;
 
 import Entities.Tarificacion;
 import Gateways.PersistenciaTarificacion;
-import Repositories.PersistenciaTarificacionSql;
+import Repositories.TarificacionSqlRepository;
 
 public class AgregarTarificacionUseCase {
 	public void agregarTarificacion(Tarificacion tarificacion) {
-		PersistenciaTarificacion persistencia=new PersistenciaTarificacionSql();
+		PersistenciaTarificacion persistencia=new TarificacionSqlRepository();
 		persistencia.guardarTarificacion(tarificacion);
 	}
 }

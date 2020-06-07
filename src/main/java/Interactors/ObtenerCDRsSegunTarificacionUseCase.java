@@ -5,16 +5,16 @@ import java.util.List;
 import Entities.CDR;
 import Entities.Tarificacion;
 import Gateways.PersistenciaCDR;
-import Repositories.PersistenciaCDRArchivo;
-import Repositories.PersistenciaCDRSql;
+import Repositories.CDRFileRepository;
+import Repositories.CDRSqlRepository;
 
-public class ObtenerCDRSUseCase {
+public class ObtenerCDRsSegunTarificacionUseCase {
 	public List<CDR> obtenerCDRS(Tarificacion tarificacion){
 		PersistenciaCDR persistencia;
 		if(tarificacion.getTipo()=="sql") {
-			persistencia=new PersistenciaCDRSql();
+			persistencia=new CDRSqlRepository();
 		}else {
-			persistencia=new PersistenciaCDRArchivo();
+			persistencia=new CDRFileRepository();
 		}
 		return persistencia.getCDRSbyTarificationId(tarificacion.getId());
 	}
