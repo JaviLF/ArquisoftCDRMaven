@@ -25,7 +25,7 @@ public class LineaController implements UiPresenter {
 	PersistenciaCDR cdrs= new CDRSqlRepository();
 	PersistenciaLinea lineas= new LineaSqlRepository();
 
-	@Override
+	@Override 
 	public void main() {
 		post("/uploadLinea", "multipart/form-data", (request, response) -> {
 		 	GuardarLineasUseCase agregarLineasUseCase=new GuardarLineasUseCase();
@@ -40,7 +40,7 @@ public class LineaController implements UiPresenter {
 			String fName = request.raw().getPart("upfile").getSubmittedFileName();
 			Part uploadedFile = request.raw().getPart("upfile");
 			Path out = Paths.get(fName);
-			//int lineasIngresadas=agregarLineasUseCase.agregarLineasDesdeArchivo(out);
+			int lineasIngresadas=agregarLineasUseCase.agregarLineasDesdeArchivo(out);
 			response.redirect("/");
 			return null;
 		});
@@ -55,7 +55,7 @@ public class LineaController implements UiPresenter {
 			if(Integer.parseInt(tipoPlan)==3)
 				plan=new PlanWow();
 			Linea linea=new Linea(telf,usuario,plan);
-			//lineas.guardarLinea(linea);
+			lineas.guardarLinea(linea);
 			return addCDR();
 		});
 		

@@ -18,7 +18,7 @@ public class CDRController implements UiPresenter {
 
 	@Override
 	public void main() {
-post("/addCDR", (request, response) -> addCDR());
+post("/addCDR", (request, response) -> addCDR()); 
 		PersistenciaCDR cdrs= new CDRSqlRepository();
 		PersistenciaLinea lineas= new LineaSqlRepository();
 		post("/SaveCDR",(request, response) ->{
