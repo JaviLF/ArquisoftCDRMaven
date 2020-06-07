@@ -25,10 +25,11 @@ import Entities.PlanPrepago;
 import Entities.PlanWow;
 import Gateways.PersistenciaCDR;
 import Gateways.PersistenciaLinea;
-import Interactors.AgregarLineasDesdeArchivoUseCase;
-import Presenters.UiPresenter;
-import Repositories.PersistenciaCDRSql;
-import Repositories.PersistenciaLineaSql;
+import Interactors.GuardarLineasUseCase;
+import Interactors.ObtenerLineasTelefonicasDeArchivoUseCase;
+import Presenters.UiPresenter; 
+import Repositories.CDRSqlRepository;
+import Repositories.LineaSqlRepository;
 
 import TemplateEngine.FreeMarkerEngine;
 import spark.ModelAndView;
@@ -38,20 +39,15 @@ import spark.ModelAndView;
 public class SparkUIViewModel implements UiPresenter{
 
 	public void main() {
-		PersistenciaCDR cdrs= new PersistenciaCDRSql();
-		PersistenciaLinea lineas= new PersistenciaLineaSql();
+		PersistenciaCDR cdrs= new CDRSqlRepository();
+		PersistenciaLinea lineas= new LineaSqlRepository();
 		LineaController lineaController=new LineaController();
 		CDRController cdrController=new CDRController();
 		HomeController homeController=new HomeController();
 		homeController.main();
 		lineaController.main();
 		cdrController.main();
-
+		
 	}
-	
-	
-	
 
-	
-	
 }

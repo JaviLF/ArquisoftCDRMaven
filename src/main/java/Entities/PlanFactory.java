@@ -1,34 +1,25 @@
 package Entities;
 
+import java.util.List;
+
 public class PlanFactory {
-	public Plan generarPlanById(int id) {
-		Plan plan=new PlanPrepago();
-		switch(id) {
-		case(1):
-			plan=new PlanPrepago();
-			break;
-		case(2):
-			plan=new PlanPostpago();
-			break;
-		case(3):
-			plan=new PlanWow();
-			break;
-		}
-		return plan;
-	}
-	public Plan generarPlanByName(String name) {
-		Plan plan=new PlanPrepago();
+	
+	
+	public Plan generarPlanByName(String name,List<String>NumerosAmigos) {
+		Plan plan=null;
+		
 		switch(name) {
-		case("Prepago"):
-			plan=new PlanPrepago();
+		case("prepago"):
+			plan=new PlanPrepago(new TarifaPorHoras());
 			break;
-		case("Postpago"):
-			plan=new PlanPostpago();
+		case("postpago"):
+			plan=new PlanPostpago(new TarifaFija());
 			break;
-		case("Wow"):
-			plan=new PlanWow();
+		case("wow"):
+			plan=new PlanWow(new TarifaFija(),NumerosAmigos);
 			break;
 		}
 		return plan;
 	}
+	
 }

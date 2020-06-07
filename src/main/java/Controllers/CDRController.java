@@ -11,23 +11,23 @@ import Entities.PlanWow;
 import Gateways.PersistenciaCDR;
 import Gateways.PersistenciaLinea;
 import Presenters.UiPresenter;
-import Repositories.PersistenciaCDRSql;
-import Repositories.PersistenciaLineaSql;
+import Repositories.CDRSqlRepository;
+import Repositories.LineaSqlRepository;
 
 public class CDRController implements UiPresenter {
 
 	@Override
 	public void main() {
-post("/addCDR", (request, response) -> addCDR());
-		PersistenciaCDR cdrs= new PersistenciaCDRSql();
-		PersistenciaLinea lineas= new PersistenciaLineaSql();
+post("/addCDR", (request, response) -> addCDR()); 
+		PersistenciaCDR cdrs= new CDRSqlRepository();
+		PersistenciaLinea lineas= new LineaSqlRepository();
 		post("/SaveCDR",(request, response) ->{
 			String telf_origen=request.queryParams("telf_origen");
 			String telf_destino=request.queryParams("telf_destino");
 			String horaLlamada=request.queryParams("horaLlamada");
 			String duracionLlamada=request.queryParams("duracionLlamada");
 			CDR cdr=new CDR(telf_origen,telf_destino,"01-01-2020",horaLlamada,duracionLlamada);//fechaHardcodeada
-			cdr.calcularTarifaParaLinea(lineas.getLinea(telf_origen));
+			cdr.calcularTarifaSegunLinea(lineas.getLineaByNumero(telf_origen));
 			cdrs.guardarCDR(cdr,1);
 			return mostrarTarificado(cdr.getId());
 		});
@@ -48,24 +48,24 @@ post("/addCDR", (request, response) -> addCDR());
 				plan1=new PlanWow();
 			}
 			Linea linea=new Linea(telf_origen,"Pepe",plan1);
-			cdr.calcularTarifaParaLinea(linea);
-			PersistenciaCDR persis=new PersistenciaCDRSql();
+			cdr.calcularTarifaSegunLinea(linea);
+			PersistenciaCDR persis=new CDRSqlRepository();
 			persis.guardarCDR(cdr,1);
 			return mostrarTarificado(cdr.getId());
 		});
 		
 	}
 	private static String mostrarTarificado(int id) {
-		PersistenciaCDR persis=new PersistenciaCDRSql();
+		PersistenciaCDR persis=new CDRSqlRepository();
 		CDR cdr=persis.getCDR(id);
 		return "<html>"
 				+ "<body>"
 					+ "<form method='get' action='/'>"
 					+ "<label>telf_origen:</label>"
-					+ "<label>  "+cdr.getNumeroLlamante()+"</label>"
+					+ "<label>  "+cdr.getTelfOrigen()+"</label>"
 					+ "<br/>"
 					+ "<label>telf_destino:</label>"
-					+ "<label> "+cdr.getNumeroLlamado()+"</label>"
+					+ "<label> "+cdr.getTelfDestino()+"</label>"
 					+ "<br/>"
 					+ "<label>horaLlamada:</label>"
 					+ "<label> "+cdr.getHoraLlamada()+"</label>"

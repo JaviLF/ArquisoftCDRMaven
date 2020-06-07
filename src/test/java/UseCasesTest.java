@@ -1,70 +1,52 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import Entities.Tarificacion;
 import Gateways.PersistenciaCDR;
 import Gateways.PersistenciaLinea;
-import Interactors.AgregarCDRDesdeArchivoUseCase;
-import Interactors.AgregarLineasDesdeArchivoUseCase;
+import Interactors.GuardarLineasUseCase;
+import Interactors.ObtenerCDRsDesdeArchivoUseCase;
+import Interactors.ObtenerLineasTelefonicasDeArchivoUseCase;
 import Interactors.AgregarTarificacionUseCase;
 import Interactors.ObtenerTarificacionesUseCase;
 import Interactors.SeleccionarPersistenciaCDRUseCase;
-import Repositories.PersistenciaLineaSql;
+import Interactors.TarificarYGuardarCDRsUseCase;
+import Repositories.LineaSqlRepository;
 
-class UseCasesTest {
+class UseCasesTest { 
 
 	@Test
-	void FlujoTarificacionDesdeArchivoTest() {
-		AgregarLineasDesdeArchivoUseCase aggL=new AgregarLineasDesdeArchivoUseCase();
-		assertEquals(3,aggL.agregarLineasDesdeArchivo("ejemplo_entrada_lineas.txt"));
+	void FlujoTarificacionDesdeArchivoTest() {  
+		ObtenerLineasTelefonicasDeArchivoUseCase OLTDAUC= new ObtenerLineasTelefonicasDeArchivoUseCase();
+		List<String> lineasAIngresar=OLTDAUC.ObtenerLineasDeArchivo(Paths.get("C:/Users/PC/Desktop/ejemplo_entrada_lineas.txt"));
+		GuardarLineasUseCase GLUC=new GuardarLineasUseCase();
+		assertEquals(4,GLUC.guardarLineasDesdeArchivo(lineasAIngresar, "archivo").size());
 		
 		SeleccionarPersistenciaCDRUseCase selecP = new SeleccionarPersistenciaCDRUseCase();
 		PersistenciaCDR persistencia= selecP.seleccionarPersistencia("archivo");
 		AgregarTarificacionUseCase agreT = new AgregarTarificacionUseCase();
-		Tarificacion tarificacion=new Tarificacion("31-5-2020","archivo");
+		Tarificacion tarificacion=new Tarificacion("archivo");
+		
 		agreT.agregarTarificacion(tarificacion);
 		//ObtenerTarificacionesUseCase obtT=new ObtenerTarificacionesUseCase();
 		//tarificacion=obtT.obtenerTarificaciones().get(0);
-		AgregarCDRDesdeArchivoUseCase aggC=new AgregarCDRDesdeArchivoUseCase();
-		assertEquals(6,aggC.agregarCDRDesdeArchivo("ejemplo_entrada_cdrs.txt", persistencia, tarificacion.getId()));
+		ObtenerCDRsDesdeArchivoUseCase OCDAUC= new ObtenerCDRsDesdeArchivoUseCase();
+		List<String> cdrsAIngresar=OCDAUC.ObtenerCDRsDeArchivo(Paths.get("C:/Users/PC/Desktop/ejemplo_entrada_cdrs.txt"));
+		TarificarYGuardarCDRsUseCase TYGCUC=new TarificarYGuardarCDRsUseCase();
 		
-		persistencia= selecP.seleccionarPersistencia("sql");
-		tarificacion=new Tarificacion("31-5-2020","sql");
+		//Path path = Paths.get("C:/Users/PC/Desktop/ejemplo_entrada_cdrs.txt");
+		assertEquals(6,TYGCUC.agregarCDRDesdeArchivo(cdrsAIngresar, "archivo", tarificacion.getId()).size());
+		
+		/*persistencia= selecP.seleccionarPersistencia("sql");
+		tarificacion=new Tarificacion("sql");
 		agreT.agregarTarificacion(tarificacion);
-		assertEquals(6,aggC.agregarCDRDesdeArchivo("ejemplo_entrada_cdrs.txt", persistencia, tarificacion.getId()));
+		assertEquals(6,aggC.agregarCDRDesdeArchivo(path, persistencia, tarificacion.getId()));*/
 	}
-	/*@Test
-	void AgregarCDRDesdeArchivoTest() {
-		fail("Not yet implemented");
-	}
-	@Test
-	void AgregarLineaTest() {
-		fail("Not yet implemented");
-	}
-	@Test
-	void AgregarLineaDesdeArchivoTest() {
-		fail("Not yet implemented");
-	}
-	@Test
-	void AgregarCDRTest() {
-		fail("Not yet implemented");
-	}
-	@Test
-	void ObtenerTarificacionesTest() {
-		fail("Not yet implemented");
-	}
-	@Test
-	void AgregarCDRTest() {
-		fail("Not yet implemented");
-	}
-	@Test
-	void AgregarCDRTest() {
-		fail("Not yet implemented");
-	}
-	@Test
-	void AgregarCDRTest() {
-		fail("Not yet implemented");
-	}*/
+	
 
 }

@@ -1,17 +1,24 @@
 package Entities;
 public class PlanPostpago implements Plan{
 	//propiedades plan
-	int id=2;
-	private double tarifa=0.99;
-		
+	String nombre="postpago";
+	Tarifa tarifa;
+	
 	public PlanPostpago(){	}
 	
-	public int getId() {
-		return this.id;
+	public PlanPostpago(Tarifa tarifa) {
+		this.tarifa=tarifa;
 	}
-		
+
+	public String getNombre() {
+		return this.nombre;
+	}
+	
+	public void setTarifa(Tarifa tarifa) {
+		this.tarifa=tarifa;
+	}
+	
 	public double getTarifaPorMinuto(CDR cdr) {
-		return tarifa;
-	}
-		
+		return this.tarifa.getTarifa(cdr);
+	}	
 }

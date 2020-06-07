@@ -4,11 +4,11 @@ import java.util.List;
 
 import Entities.Tarificacion;
 import Gateways.PersistenciaTarificacion;
-import Repositories.PersistenciaTarificacionSql;
+import Repositories.TarificacionSqlRepository;
 
 public class ObtenerTarificacionesUseCase {
 	public List<Tarificacion> obtenerTarificaciones(){
-		PersistenciaTarificacion persistencia=new PersistenciaTarificacionSql();
+		PersistenciaTarificacion persistencia=new TarificacionSqlRepository();
 		return persistencia.getTarificaciones();
 	}
 }
