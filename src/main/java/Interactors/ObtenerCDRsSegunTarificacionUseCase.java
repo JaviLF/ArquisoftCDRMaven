@@ -1,5 +1,6 @@
 package Interactors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Entities.CDR;
@@ -10,12 +11,17 @@ import Repositories.CDRSqlRepository;
 
 public class ObtenerCDRsSegunTarificacionUseCase {
 	public List<CDR> obtenerCDRS(Tarificacion tarificacion){
-		PersistenciaCDR persistencia;
-		if(tarificacion.getTipo()=="sql") {
+		PersistenciaCDR persistencia=null;
+		switch(tarificacion.getTipo()) {
+		case("sql"):
 			persistencia=new CDRSqlRepository();
-		}else {
+			break;
+		case("archivo"):
 			persistencia=new CDRFileRepository();
+			break;
 		}
-		return persistencia.getCDRSbyTarificationId(tarificacion.getId());
+		List<CDR>lista=new ArrayList<CDR>();
+		lista=persistencia.getCDRSbyTarificationId(tarificacion.getId());
+		return lista;
 	}
 }

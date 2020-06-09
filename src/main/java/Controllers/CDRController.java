@@ -1,105 +1,70 @@
 package Controllers;
 
 import static spark.Spark.post;
+import static spark.Spark.get;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.MultipartConfigElement;
+
 
 import Entities.CDR;
-import Entities.Linea;
-import Entities.Plan;
-import Entities.PlanPostpago;
-import Entities.PlanPrepago;
-import Entities.PlanWow;
-import Gateways.PersistenciaCDR;
-import Gateways.PersistenciaLinea;
-import Presenters.UiPresenter;
-import Repositories.CDRSqlRepository;
-import Repositories.LineaSqlRepository;
 
-public class CDRController implements UiPresenter {
+import Entities.Tarificacion;
 
-	@Override
+import Interactors.AgregarTarificacionUseCase;
+import Interactors.ObtenerCDRsDesdeArchivoUseCase;
+import Interactors.ObtenerCDRsSegunTarificacionUseCase;
+import Interactors.ObtenerTarificacionUseCase;
+import Interactors.TarificarYGuardarCDRsUseCase;
+
+import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
+import spark.template.thymeleaf.ThymeleafTemplateEngine;
+
+public class CDRController {
+	private static ThymeleafTemplateEngine engine = new ThymeleafTemplateEngine();
+
 	public void main() {
-post("/addCDR", (request, response) -> addCDR()); 
-		PersistenciaCDR cdrs= new CDRSqlRepository();
-		PersistenciaLinea lineas= new LineaSqlRepository();
-		post("/SaveCDR",(request, response) ->{
-			String telf_origen=request.queryParams("telf_origen");
-			String telf_destino=request.queryParams("telf_destino");
-			String horaLlamada=request.queryParams("horaLlamada");
-			String duracionLlamada=request.queryParams("duracionLlamada");
-			CDR cdr=new CDR(telf_origen,telf_destino,"01-01-2020",horaLlamada,duracionLlamada);//fechaHardcodeada
-			cdr.calcularTarifaSegunLinea(lineas.getLineaByNumero(telf_origen));
-			cdrs.guardarCDR(cdr,1);
-			return mostrarTarificado(cdr.getId());
+		
+		post("/:tipo/UploadCDR",(Request request,Response response) ->{
+			ObtenerCDRsDesdeArchivoUseCase obtenerCDR=new ObtenerCDRsDesdeArchivoUseCase();
+			TarificarYGuardarCDRsUseCase tarificarYGuardar = new TarificarYGuardarCDRsUseCase();
+			AgregarTarificacionUseCase agregarTarificacion=new AgregarTarificacionUseCase();
+			Tarificacion tarificacion=agregarTarificacion.agregarTarificacion(request.params(":tipo"));
+			 
+			request.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+			String fName = request.raw().getPart("upfile").getSubmittedFileName();
+			Path out = Paths.get(fName);
+			
+			List<String> CDRs=obtenerCDR.ObtenerCDRsDeArchivo(out);
+			List<CDR> CDRsIngresados=tarificarYGuardar.agregarCDRDesdeArchivo(CDRs, tarificacion.getTipo(), tarificacion.getId());
+			Map<String, Object> viewObjects = new HashMap<String, Object>();
+	        viewObjects.put("cant", CDRsIngresados.size());
+	        Iterable <CDR> CDRSIngresados=CDRsIngresados;
+	        viewObjects.put("CDRSIngresados", CDRSIngresados);
+	        viewObjects.put("tipo", request.params(":tipo"));
+	        return engine.render(new ModelAndView(viewObjects, "CDRsIngresados"));
 		});
 		
-		post("/CDRTarificado",(request, response) -> {
-			String telf_origen=request.queryParams("telf_origen");
-			String telf_destino=request.queryParams("telf_destino");
-			String horaLlamada=request.queryParams("horaLlamada");
-			String duracionLlamada=request.queryParams("duracionLlamada");
-			String plan=request.queryParams("plan");
-			System.out.println(plan);
-			CDR cdr=new CDR(telf_origen,telf_destino,"01-01-2020",horaLlamada,duracionLlamada);//fechaHardcodeada
-			Plan plan1=new PlanPrepago();
-			if(plan=="2") {
-				plan1=new PlanPostpago();
-			}
-			if(plan=="3") {
-				plan1=new PlanWow();
-			}
-			Linea linea=new Linea(telf_origen,"Pepe",plan1);
-			cdr.calcularTarifaSegunLinea(linea);
-			PersistenciaCDR persis=new CDRSqlRepository();
-			persis.guardarCDR(cdr,1);
-			return mostrarTarificado(cdr.getId());
+		get("/:tipo/getCDRsRegistered/:id",(request, response) ->{
+			ObtenerCDRsSegunTarificacionUseCase obtenerCDRs=new ObtenerCDRsSegunTarificacionUseCase();
+			ObtenerTarificacionUseCase obtenerTarificacion=new ObtenerTarificacionUseCase();
+			Tarificacion tarificacion=obtenerTarificacion.getTarificacion(Integer.parseInt(request.params(":id")),request.params(":tipo"));
+			List<CDR> cdrsTarificacion=obtenerCDRs.obtenerCDRS(tarificacion);
+			Iterable<CDR> listaCDRs=cdrsTarificacion;
+			Map<String, Object> viewObjects = new HashMap<String, Object>();
+			viewObjects.put("listaCDRs", listaCDRs);
+			viewObjects.put("cant", tarificacion.getId());
+			viewObjects.put("tipo", request.params(":tipo"));
+			return engine.render(new ModelAndView(viewObjects, "TarificationCDRs"));
 		});
 		
-	}
-	private static String mostrarTarificado(int id) {
-		PersistenciaCDR persis=new CDRSqlRepository();
-		CDR cdr=persis.getCDR(id);
-		return "<html>"
-				+ "<body>"
-					+ "<form method='get' action='/'>"
-					+ "<label>telf_origen:</label>"
-					+ "<label>  "+cdr.getTelfOrigen()+"</label>"
-					+ "<br/>"
-					+ "<label>telf_destino:</label>"
-					+ "<label> "+cdr.getTelfDestino()+"</label>"
-					+ "<br/>"
-					+ "<label>horaLlamada:</label>"
-					+ "<label> "+cdr.getHoraLlamada()+"</label>"
-					+ "<br/>"
-					+ "<label>duracionLlamada:</label>"
-					+ "<label> "+cdr.getDuracionLlamada()+"</label>"
-					+ "<br/>"
-					+ "<label>tarifaLlamada:</label>"
-					+ "<label> "+cdr.getTarifa()+"</label>"
-					+ "<br/>"
-					+ "<input type='submit' value='Volver Inicio'"
-				+ "</body>"
-			+ "</html>";
-	}
-	public static String addCDR() {
-		return "<html>"
-				+ "<body>"
-					+ "<form method='post' action='/SaveCDR'>"
-					+ "<label>telf_origen:</label>"
-					+ "<input type='text' name='telf_origen'>"
-					+ "<br/>"
-					+ "<label>telf_destino:</label>"
-					+ "<input type='text' name='telf_destino'>"
-					+ "<br/>"
-					+ "<label>horaLlamada:</label>"
-					+ "<input type='number' name='horaLlamada'>"
-					+ "<br/>"
-					+ "<label>duracionLlamada:</label>"
-					+ "<input type='number' step='0.01' name='duracionLlamada'>"
-					+ "<br/>"
-					+ "<input type='submit' value='Guardar y Tarifar'"
-					//+ "</form>"
-				+ "</body>"
-			+ "</html>";
 	}
 
 }

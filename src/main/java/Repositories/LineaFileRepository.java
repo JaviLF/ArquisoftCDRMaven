@@ -4,18 +4,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.file.Path;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import DTOs.LineaDTO;
-import Entities.CDR;
+
 import Entities.Linea;
-import Entities.Plan;
+
 import Entities.PlanFactory;
-import Entities.PlanPostpago;
-import Entities.PlanPrepago;
-import Entities.PlanWow;
+
 import Gateways.PersistenciaLinea;
  
 public class LineaFileRepository implements PersistenciaLinea{
@@ -53,7 +51,7 @@ public class LineaFileRepository implements PersistenciaLinea{
 			datosLinea=datosLinea+"%"+null+"%"+null+"%"+null+"%"+null;
 		}else {
 			for(int i=0;i<4;i++) {
-				System.out.println(numerosAmigos.size());
+				
 				if(i<numerosAmigos.size()) {
 					datosLinea=datosLinea+"%";
 					datosLinea=datosLinea+(numerosAmigos.get(i));
@@ -62,7 +60,7 @@ public class LineaFileRepository implements PersistenciaLinea{
 				}
 			}
 		}
-		System.out.println(datosLinea);
+		
 		return datosLinea;
 	}
 	
@@ -80,9 +78,9 @@ public class LineaFileRepository implements PersistenciaLinea{
 				boolean found=false;
 				while(found==false) {
 					line = br.readLine();
-					System.out.println(line);
+					
 					contacto = line.split("%");
-					System.out.println(contacto[0]);
+					
 					if(Integer.parseInt(contacto[0])==Integer.parseInt(numero))
 						found=true;
 				}
@@ -138,45 +136,6 @@ public class LineaFileRepository implements PersistenciaLinea{
 		return linea;
 	}
 	
-	/*
-	public int saveFromArchive(Path archive) {
-		int count=0;
-		try {
-			File f = archive.toFile();
-			if(f.exists()) {
-				FileReader fr = new FileReader(f);
-				BufferedReader br = new BufferedReader(fr);
-				String linea;
-				linea = br.readLine();//header
-				linea = br.readLine();//firstline
-				String [] contacto;
-				PlanFactory factory=new PlanFactory();
-				while(linea != null) {
-					count=count+1;
-					linea=linea.replace("[", "");
-					linea=linea.replace("]", "");
-					System.out.println(linea);
-					contacto = linea.split(",");
-					Linea lineaTelef = new Linea();
-					lineaTelef.setNumero(contacto[0]);
-					lineaTelef.setNombreUsuario(contacto[1]);
-					//lineaTelef.setPlan(factory.generarPlanByName(contacto[2].toLowerCase()));
-					for(int i=3;i<7;i++) {
-					//	if(i<contacto.length)
-					//		lineaTelef.addNumeroAmigo(contacto[i]);
-					}
-					//guardarLinea(lineaTelef);
-					linea = br.readLine();
-				}
-				br.close();
-			}
-			
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return count;
-	}
-	*/
 	
 	public boolean exists(String numero) {
 		boolean resp=false;

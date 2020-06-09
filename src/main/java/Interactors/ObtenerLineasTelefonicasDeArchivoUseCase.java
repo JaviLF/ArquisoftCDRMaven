@@ -7,8 +7,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import Entities.Linea;
-import Entities.PlanFactory;
 
 public class ObtenerLineasTelefonicasDeArchivoUseCase {
 	

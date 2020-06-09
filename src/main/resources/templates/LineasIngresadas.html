@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+		<title>Page Title</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
+	</head>
+	<body>
+	     <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center" >
+	        <!-- Links -->
+	        <ul class="navbar-nav">
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/' + tipo}">Cargar Lineas</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'/GetCDRFile'}">Cargar CDR</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'/GetTarifications'}">Ver Tarificaciones</a>
+	          </li>
+	          
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'#'}">Facturar</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'/Configuration'}">Configuracion</a>
+	          </li>
+	        </ul>
+	    </nav>
+	    <br></br>
+	    <br></br>
+	    <br></br>
+		<div class="jumbotron text-center">
+			<table class="table table-bordered table-dark" style="border:1px solid black;margin-left:auto;margin-right:auto;">
+			    <tr>
+			        <th>
+			            Numero
+			        </th>
+			         <th>
+			            Nombre
+			        </th>
+			         <th>
+			            Plan
+			        </th>
+			        <th>
+			            Numeros Amigos
+			        </th>
+			    </tr>
+			
+			    <tr th:each="lineaDTO : ${lineasIngresadas}">
+			        <td th:text="${lineaDTO.linea.numero}">
+			        </td>
+			        <td th:text="${lineaDTO.linea.nombreUsuario}">
+			        </td>
+			        <td th:text="${lineaDTO.linea.plan.nombre}">
+			        </td>
+			        <td th:text="${lineaDTO.numerosAmigos}">
+			        </td>
+				</tr>
+			</table>
+		</div>
+		<div class="jumbotron text-center">
+			<td th:text="${cant}">
+			</td>
+			<p>Lineas ingresadas</p>
+		</div>
+	</body>
+</html>

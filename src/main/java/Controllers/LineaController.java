@@ -1,106 +1,68 @@
 package Controllers;
 
-import static spark.Spark.post;
+import static spark.Spark.*;
+
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.MultipartConfigElement;
-import javax.servlet.http.Part;
 
+
+import DTOs.LineaDTO;
 import Entities.Linea;
-import Entities.Plan;
-import Entities.PlanPostpago;
-import Entities.PlanPrepago;
-import Entities.PlanWow;
+
 import Gateways.PersistenciaCDR;
 import Gateways.PersistenciaLinea;
 import Interactors.GuardarLineasUseCase;
-import Presenters.UiPresenter;
+import Interactors.ObtenerLineasTelefonicasDeArchivoUseCase;
+import Interactors.ObtenerLineasUseCase;
+
 import Repositories.CDRSqlRepository;
 import Repositories.LineaSqlRepository;
 
-public class LineaController implements UiPresenter {
+import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
+import spark.template.thymeleaf.ThymeleafTemplateEngine;
+
+public class LineaController {
 	PersistenciaCDR cdrs= new CDRSqlRepository();
 	PersistenciaLinea lineas= new LineaSqlRepository();
-
-	@Override 
-	public void main() {
-		post("/uploadLinea", "multipart/form-data", (request, response) -> {
+	private static ThymeleafTemplateEngine engine = new ThymeleafTemplateEngine();
+	
+	public void main() { 
+		
+		post("/:tipo/uploadLinea", "multipart/form-data", (Request request, Response response) -> {
+			
 		 	GuardarLineasUseCase agregarLineasUseCase=new GuardarLineasUseCase();
-			//- Servlet 3.x config
-			String location = "/aaa/bbb";  
-			long maxFileSize = 100000000;  
-			long maxRequestSize = 100000000; 
-			int fileSizeThreshold = 1024;  
-			MultipartConfigElement multipartConfigElement = new MultipartConfigElement(location, maxFileSize, maxRequestSize, fileSizeThreshold);
-			request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
-			Collection<Part> parts = request.raw().getParts();
+		 	ObtenerLineasTelefonicasDeArchivoUseCase obtenerLineas=new ObtenerLineasTelefonicasDeArchivoUseCase();
+		 	
+		 	request.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 			String fName = request.raw().getPart("upfile").getSubmittedFileName();
-			Part uploadedFile = request.raw().getPart("upfile");
 			Path out = Paths.get(fName);
-			int lineasIngresadas=agregarLineasUseCase.agregarLineasDesdeArchivo(out);
-			response.redirect("/");
-			return null;
-		});
-		post("/addLinea", (request, response) -> addLinea());
-		post("/SaveLinea",(request, response) ->{
-			String telf=request.queryParams("telefono");
-			String usuario=request.queryParams("usuario");
-			String tipoPlan=request.queryParams("tipo");
-			Plan plan=new PlanPrepago();
-			if(Integer.parseInt(tipoPlan)==2)
-				plan=new PlanPostpago();
-			if(Integer.parseInt(tipoPlan)==3)
-				plan=new PlanWow();
-			Linea linea=new Linea(telf,usuario,plan);
-			lineas.guardarLinea(linea);
-			return addCDR();
+			
+			List<String> lineas=obtenerLineas.ObtenerLineasDeArchivo(out);
+			List<LineaDTO> lineasIngresadas=agregarLineasUseCase.guardarLineasDesdeArchivo(lineas, request.params(":tipo"));
+			Map<String, Object> viewObjects = new HashMap<String, Object>();
+	           viewObjects.put("cant", lineasIngresadas.size());
+	           Iterable <LineaDTO> LineasIngresadas=lineasIngresadas;
+	           viewObjects.put("lineasIngresadas", LineasIngresadas);
+	           viewObjects.put("tipo", request.params(":tipo"));
+	           return engine.render(new ModelAndView(viewObjects, "LineasIngresadas"));
+	        });
+		get("/:tipo/getLineas", (request, response) -> {
+			ObtenerLineasUseCase obtenerLineas=new ObtenerLineasUseCase();
+			Iterable<Linea> lineas=obtenerLineas.getLineas(request.params(":tipo"));
+			Map<String, Object> viewObjects = new HashMap<String, Object>();
+			   viewObjects.put("lineas", lineas);
+	           viewObjects.put("tipo", request.params(":tipo"));
+	           return engine.render(new ModelAndView(viewObjects, "LineasIngresadas"));
 		});
 		
-	}
-	
-	public static String addLinea() {
-		return "<html>"
-				+ "<body>"
-					+ "<form method='post' action='/SaveLinea'>"//
-					+ "<label>telefono:</label>"
-					+ "<input type='text' name='telefono'>"
-					+ "<br/>"
-					+ "<label>Usuario:</label>"
-					+ "<input type='text' name='usuario'>"
-					+ "<br/>"
-					+ "<b>Tipo:</b>"
-					+ "<select name='tipo'  id='tipo'>"
-                    +"<option value='3'>Plan Wow</option>"
-                    +"<option value='1'>Plan PrePago</option>"
-                    +"<option value='2'>Plan PostPago</option>"
-                    +"</select>"
-					+ "<br/>"
-					+ "<input type='submit' value='Guardar Linea'"
-				+ "</body>"
-			+ "</html>";
-	}
-	public static String addCDR() {
-		return "<html>"
-				+ "<body>"
-					+ "<form method='post' action='/SaveCDR'>"
-					+ "<label>telf_origen:</label>"
-					+ "<input type='text' name='telf_origen'>"
-					+ "<br/>"
-					+ "<label>telf_destino:</label>"
-					+ "<input type='text' name='telf_destino'>"
-					+ "<br/>"
-					+ "<label>horaLlamada:</label>"
-					+ "<input type='number' name='horaLlamada'>"
-					+ "<br/>"
-					+ "<label>duracionLlamada:</label>"
-					+ "<input type='number' step='0.01' name='duracionLlamada'>"
-					+ "<br/>"
-					+ "<input type='submit' value='Guardar y Tarifar'"
-					//+ "</form>"
-				+ "</body>"
-			+ "</html>";
 	}
 }

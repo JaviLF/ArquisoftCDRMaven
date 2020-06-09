@@ -3,25 +3,25 @@ package Entities;
 import Gateways.PersistenciaCDR;
 
 public class CDR {
-	//private static AtomicInteger ID_GENERATOR = new AtomicInteger(1);
+	
 	int id=0;
-	private String telf_origen;
-	private String telf_destino;
+	private String telfOrigen;
+	private String telfDestino;
 	private String fecha="01-01-2020";
 	private String horaLlamada = "00:00";
 	private String duracionLlamada= "00:00";
 	private double tarifa;
 	
 	public CDR() { 
-		telf_origen="0000";
-		telf_destino="1111";
+		telfOrigen="0000";
+		telfDestino="1111";
 		horaLlamada = "00:00";
 		duracionLlamada= "00:00";
 	}
 	
 	public CDR(String numeroLlamante, String numeroLlamado,String fecha,String horaLlamada,String duracionLlamada) {
-		this.telf_origen=numeroLlamante;
-		this.telf_destino=numeroLlamado;
+		this.telfOrigen=numeroLlamante;
+		this.telfDestino=numeroLlamado;
 		this.fecha=fecha;
 		this.horaLlamada=horaLlamada;
 		this.duracionLlamada=duracionLlamada;
@@ -52,16 +52,16 @@ public class CDR {
 		return duracionLlamada;
 	}
 	public void setTelfOrigen(String numeroLlamante) {
-		this.telf_origen=numeroLlamante;
+		this.telfOrigen=numeroLlamante;
 	}
 	public String getTelfOrigen() {
-		return telf_origen;
+		return telfOrigen;
 	}
 	public void setTelfDestino(String numeroLlamado) {
-		this.telf_destino=numeroLlamado;
+		this.telfDestino=numeroLlamado;
 	}
 	public String getTelfDestino() {
-		return telf_destino;
+		return telfDestino;
 	}
 	public void setTarifa(double tarifa) {
 		this.tarifa=tarifa;

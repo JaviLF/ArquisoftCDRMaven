@@ -1,14 +1,12 @@
 package Interactors;
 
-import java.util.List;
-
 import Entities.Tarificacion;
 import Gateways.PersistenciaTarificacion;
 import Repositories.TarificacionFileRepository;
 import Repositories.TarificacionSqlRepository;
 
-public class ObtenerTarificacionesUseCase {
-	public List<Tarificacion> obtenerTarificaciones(String tipo){
+public class ObtenerTarificacionUseCase {
+	public Tarificacion getTarificacion(int id,String tipo) {
 		PersistenciaTarificacion persistencia=null;
 		switch(tipo) {
 		case("sql"):
@@ -18,6 +16,6 @@ public class ObtenerTarificacionesUseCase {
 			persistencia=new TarificacionFileRepository();
 			break;
 		}
-		return persistencia.getTarificaciones();
+		return persistencia.getTarificacionById(id);
 	}
 }

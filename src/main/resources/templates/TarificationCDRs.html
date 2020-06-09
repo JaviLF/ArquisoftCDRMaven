@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+		<title>Page Title</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
+	</head>
+	<body>
+	     <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center" >
+	        <!-- Links -->
+	        <ul class="navbar-nav">
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/' + tipo}">Cargar Lineas</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'/GetCDRFile'}">Cargar CDR</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'/GetTarifications'}">Ver Tarificaciones</a>
+	          </li>
+	          
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'#'}">Facturar</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'/Configuration'}">Configuracion</a>
+	          </li>
+	        </ul>
+	    </nav>
+	    <br></br>
+	    <br></br>
+	    <br></br>
+		<div class="jumbotron text-center">
+			<table class="table table-bordered table-dark" style="border:1px solid black;margin-left:auto;margin-right:auto;">
+			    <tr>
+			        <th>
+			            Telf_Origen
+			        </th>
+			         <th>
+			            Telf_Destino
+			        </th>
+			         <th>
+			            Fecha
+			        </th>
+			        <th>
+			            Hora_Llamada
+			        </th>
+			        <th>
+			            Duracion_Llamada
+			        </th>
+			        <th>
+			            Costo
+			        </th>
+			    </tr>
+			
+			    <tr th:each="cdr : ${listaCDRs}">
+			        <td th:text="${cdr.telfOrigen}">
+			        </td>
+			        <td th:text="${cdr.telfDestino}">
+			        </td>
+			        <td th:text="${cdr.fecha}">
+			        </td>
+			        <td th:text="${cdr.horaLlamada}">
+			        </td>
+			        <td th:text="${cdr.duracionLlamada}">
+			        </td>
+			        <td th:text="${cdr.tarifa}">
+			        </td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

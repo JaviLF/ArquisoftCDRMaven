@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+		<title>Page Title</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+	     <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center" >
+	        <!-- Links -->
+	        <ul class="navbar-nav">
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/' + tipo}">Cargar Lineas</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'/GetCDRFile'}">Cargar CDR</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'/GetTarifications'}">Ver Tarificaciones</a>
+	          </li>
+	          
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'#'}">Facturar</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" th:href="${'/'+tipo+'/Configuration'}">Configuracion</a>
+	          </li>
+	        </ul>
+	    </nav>
+	    <br></br>
+	    <br></br>
+	    <br></br>
+		<div class="jumbotron text-center">
+			<table class="table table-bordered table-dark" style="border:1px solid black;margin-left:auto;margin-right:auto;">
+			    <tr>
+			        <th>
+			            Telf_Origen
+			        </th>
+			         <th>
+			            Telf_Destino
+			        </th>
+			         <th>
+			            Fecha
+			        </th>
+			        <th>
+			            Hora_Llamada
+			        </th>
+			        <th>
+			            Duracion_Llamada
+			        </th>
+			    </tr>
+			
+			    <tr th:each="cdr : ${CDRSIngresados}">
+			        <td th:text="${cdr.telfOrigen}">
+			        </td>
+			        <td th:text="${cdr.telfDestino}">
+			        </td>
+			        <td th:text="${cdr.fecha}">
+			        </td>
+			        <td th:text="${cdr.horaLlamada}">
+			        </td>
+			        <td th:text="${cdr.duracionLlamada}">
+			        </td>
+				</tr>
+			</table>
+			<br></br>
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="margin: 0;position: absolute;left: 50%;-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);">
+		  		Tarificar
+			</button>
+		</div>
+		
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">CDRs Tarificados</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <table class="table table-bordered table-dark" style="border:1px solid black;margin-left:auto;margin-right:auto;">
+				    <tr>
+				        <th>
+				            Telf_Origen
+				        </th>
+				         <th>
+				            Telf_Destino
+				        </th>
+				         <th>
+				            Fecha
+				        </th>
+				        <th>
+				            Hora_Llamada
+				        </th>
+				        <th>
+				            Duracion_Llamada
+				        </th>
+				        <th style="background-color: #4CAF50;color: white;">
+				            COSTO
+				        </th>
+				    </tr>
+				
+				    <tr th:each="cdr : ${CDRSIngresados}">
+				        <td th:text="${cdr.telfOrigen}">
+				        </td>
+				        <td th:text="${cdr.telfDestino}">
+				        </td>
+				        <td th:text="${cdr.fecha}">
+				        </td>
+				        <td th:text="${cdr.horaLlamada}">
+				        </td>
+				        <td th:text="${cdr.duracionLlamada}">
+				        </td>
+				        <td th:text="${cdr.tarifa}">
+				        </td>
+					</tr>
+				</table>
+		      </div>
+		      <div class="modal-footer">
+		      	<td th:text="${cant}">
+				</td>
+				<p>CDRs ingresados</p>
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+	</body>
+</html>

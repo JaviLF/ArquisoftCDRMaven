@@ -65,11 +65,11 @@
  <div class="tab-content">
     <div id="menu1" class="tab-pane fade in active">
       	<h3>Cargar Linea</h3>
-		<form action="/uploadLinea" enctype="multipart/form-data" method="post">
+		<form method="post" action="/uploadLinea" enctype="multipart/form-data" >
 			
 			<label for="upfile">Selecciona archivo</label>
 			<input type="file" name="upfile"><br>
-			<input class="btn btn-primary" id="open" type="submit" value="Cargar">
+			<input class="btn btn-primary" type="submit" value="Cargar">
 			
 		</form>
     </div>

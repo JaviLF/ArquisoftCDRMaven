@@ -11,6 +11,7 @@ import Gateways.PersistenciaCDR;
 import Gateways.PersistenciaLinea;
 import Interactors.GuardarLineasUseCase;
 import Interactors.ObtenerCDRsDesdeArchivoUseCase;
+import Interactors.ObtenerCDRsSegunTarificacionUseCase;
 import Interactors.ObtenerLineasTelefonicasDeArchivoUseCase;
 import Interactors.AgregarTarificacionUseCase;
 import Interactors.ObtenerTarificacionesUseCase;
@@ -25,27 +26,28 @@ class UseCasesTest {
 		ObtenerLineasTelefonicasDeArchivoUseCase OLTDAUC= new ObtenerLineasTelefonicasDeArchivoUseCase();
 		List<String> lineasAIngresar=OLTDAUC.ObtenerLineasDeArchivo(Paths.get("C:/Users/PC/Desktop/ejemplo_entrada_lineas.txt"));
 		GuardarLineasUseCase GLUC=new GuardarLineasUseCase();
-		assertEquals(4,GLUC.guardarLineasDesdeArchivo(lineasAIngresar, "archivo").size());
+		assertEquals(3,GLUC.guardarLineasDesdeArchivo(lineasAIngresar, "sql").size());
 		
 		SeleccionarPersistenciaCDRUseCase selecP = new SeleccionarPersistenciaCDRUseCase();
-		PersistenciaCDR persistencia= selecP.seleccionarPersistencia("archivo");
+		PersistenciaCDR persistencia= selecP.seleccionarPersistencia("sql");
 		AgregarTarificacionUseCase agreT = new AgregarTarificacionUseCase();
-		Tarificacion tarificacion=new Tarificacion("archivo");
+		Tarificacion tarificacion=agreT.agregarTarificacion("sql");
 		
-		agreT.agregarTarificacion(tarificacion);
-		//ObtenerTarificacionesUseCase obtT=new ObtenerTarificacionesUseCase();
-		//tarificacion=obtT.obtenerTarificaciones().get(0);
+		
+		
 		ObtenerCDRsDesdeArchivoUseCase OCDAUC= new ObtenerCDRsDesdeArchivoUseCase();
 		List<String> cdrsAIngresar=OCDAUC.ObtenerCDRsDeArchivo(Paths.get("C:/Users/PC/Desktop/ejemplo_entrada_cdrs.txt"));
 		TarificarYGuardarCDRsUseCase TYGCUC=new TarificarYGuardarCDRsUseCase();
+
+		assertEquals(6,TYGCUC.agregarCDRDesdeArchivo(cdrsAIngresar, "sql", tarificacion.getId()).size());
 		
-		//Path path = Paths.get("C:/Users/PC/Desktop/ejemplo_entrada_cdrs.txt");
-		assertEquals(6,TYGCUC.agregarCDRDesdeArchivo(cdrsAIngresar, "archivo", tarificacion.getId()).size());
+		assertEquals(3,GLUC.guardarLineasDesdeArchivo(lineasAIngresar, "archivo").size());
 		
-		/*persistencia= selecP.seleccionarPersistencia("sql");
-		tarificacion=new Tarificacion("sql");
-		agreT.agregarTarificacion(tarificacion);
-		assertEquals(6,aggC.agregarCDRDesdeArchivo(path, persistencia, tarificacion.getId()));*/
+		ObtenerTarificacionesUseCase OTUC=new ObtenerTarificacionesUseCase();
+		assertFalse(OTUC.obtenerTarificaciones("sql").isEmpty());
+		
+		ObtenerCDRsSegunTarificacionUseCase OCSTUC=new ObtenerCDRsSegunTarificacionUseCase();
+		assertFalse(OCSTUC.obtenerCDRS(tarificacion).isEmpty());
 	}
 	
 

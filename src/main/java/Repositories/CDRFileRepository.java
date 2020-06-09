@@ -4,14 +4,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.file.Path;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 import Entities.CDR;
 import Gateways.PersistenciaCDR;
-import Gateways.PersistenciaLinea;
+
 
  
 public class CDRFileRepository implements PersistenciaCDR{
@@ -52,7 +52,7 @@ public class CDRFileRepository implements PersistenciaCDR{
 				}
 				linea = br.readLine();
 				String [] contacto = linea.split("%");
-				//CDR cdr = new CDR();
+				
 				cdr.setId(id);
 				cdr.setTelfOrigen(contacto[1]);
 				cdr.setTelfDestino(contacto[2]);
@@ -124,40 +124,6 @@ public class CDRFileRepository implements PersistenciaCDR{
 		}
 		return count;
 	}
-	/*public int saveAndTarifyFromArchive(Path path,int id_t) {
-		int count=0;
-		PersistenciaLinea persis=new LineaSqlRepository();
-		try {
-			File f = path.toFile();
-			if(f.exists()) {
-				FileReader fr = new FileReader(f);
-				BufferedReader br = new BufferedReader(fr);
-				String linea;
-				linea = br.readLine();//header
-				linea = br.readLine();//firstline
-				String [] contacto;
-				while(linea != null) {
-					count=count+1;
-					contacto = linea.split(",");
-					CDR cdr = new CDR();
-					cdr.setTelfOrigen(contacto[0]);
-					cdr.setTelfDestino(contacto[1]);
-					cdr.setFecha(contacto[2]);
-					cdr.setHoraLlamada(contacto[3]);
-					cdr.setDuracionLlamada(contacto[4]);
-						cdr.calcularTarifaSegunLinea(persis.getLineaByNumero(contacto[0]));
-					guardarCDR(cdr,id_t);
-					linea = br.readLine();
-				}
-				br.close();
-			}
-			
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return count;
-	}*/
-	
 	
 	public List<CDR> getCDRSbyTarificationId(int id) {
 		List<CDR> lista=new ArrayList<CDR>();
@@ -172,7 +138,7 @@ public class CDRFileRepository implements PersistenciaCDR{
 				
 				while(linea != null) {
 					String [] contacto = linea.split("%");
-					System.out.println(contacto[7]);
+					
 					if((Integer.parseInt(contacto[7]))==id) {
 						CDR cdr = new CDR();
 						cdr.setId(Integer.parseInt(contacto[0]));
@@ -207,7 +173,7 @@ public class CDRFileRepository implements PersistenciaCDR{
 				
 				while(linea != null) {
 					String [] contacto = linea.split("%");
-					System.out.println(contacto[7]);
+					
 					if(Long.parseLong(contacto[1])==Long.parseLong(telfOrigen)) {
 						CDR cdr = new CDR();
 						cdr.setId(Integer.parseInt(contacto[0]));
