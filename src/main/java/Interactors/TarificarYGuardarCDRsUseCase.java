@@ -1,9 +1,6 @@
 package Interactors;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.nio.file.Path;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,20 +12,22 @@ import Repositories.CDRSqlRepository;
 import Repositories.LineaFileRepository;
 import Repositories.LineaSqlRepository;
 
+
 public class TarificarYGuardarCDRsUseCase {
 	public List<CDR> agregarCDRDesdeArchivo(List<String> cdrs,String persistencia_tipo,int idTarificacion) {
-		//int cant=persistencia.saveAndTarifyFromArchive(path, idTarificacion);
-		//return cant;
 		List<CDR> lista=new ArrayList<CDR>();//de momento
 		
 		PersistenciaLinea lineasRepository=null;
 		PersistenciaCDR persistencia=null;
-		if(persistencia_tipo=="sql") {
+		switch(persistencia_tipo) {
+		case("sql"):
 			persistencia=new CDRSqlRepository();
 			lineasRepository=new LineaSqlRepository();
-		}else {
+			break;
+		case("archivo"):
 			persistencia=new CDRFileRepository();
 			lineasRepository=new LineaFileRepository();
+			break;
 		}
 		
 		int count=0;
@@ -36,7 +35,6 @@ public class TarificarYGuardarCDRsUseCase {
 			CDR cdr=generarCDRDesdeDatos(cdrs.get(i));
 			if(lineasRepository.exists(cdr.getTelfOrigen())) {
 				cdr.calcularTarifaSegunLinea(lineasRepository.getLineaByNumero(cdr.getTelfOrigen()));
-				System.out.println(cdr.getTarifa());
 			}else {
 				cdr.setTarifa(9999.9);
 			}
@@ -44,7 +42,6 @@ public class TarificarYGuardarCDRsUseCase {
 			count=count+1;
 			lista.add(cdr);
 		}
-		//return count;
 		return lista;
 	}
 	

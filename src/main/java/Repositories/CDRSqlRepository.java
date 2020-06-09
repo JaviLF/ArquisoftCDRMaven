@@ -2,8 +2,7 @@ package Repositories;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.nio.file.Path;
-//import java.net.URLDecoder;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,7 +12,6 @@ import java.util.List;
 
 import Entities.CDR;
 import Gateways.PersistenciaCDR;
-import Gateways.PersistenciaLinea;
  
 
 public class CDRSqlRepository implements PersistenciaCDR{
@@ -60,7 +58,7 @@ public class CDRSqlRepository implements PersistenciaCDR{
 	                      "VALUES ("+cdr.getTelfOrigen()+","+cdr.getTelfDestino()+",'"
 	                      +(cdr.getFecha().replace('-', 'a')) +"','"+(cdr.getHoraLlamada().replace(':', 'a')) 
 	                      +"','"+ (cdr.getDuracionLlamada().replace(':', 'a'))+"',"+cdr.getTarifa()+","+id_tarificacion+");";
-	       System.out.println(sql);
+	       
 	       stmt.executeUpdate(sql);
 	       stmt.close();
 	       c.commit();
@@ -91,9 +89,9 @@ public class CDRSqlRepository implements PersistenciaCDR{
 		    	  String  telf_destino = rs.getString("TELF_DESTINO");
 		    	  String fecha = rs.getString("FECHALLAMADA");
 		    	  String hora  = rs.getString("HORALLAMADA");
-		    	  System.out.println(hora);
+		    	  
 		    	  String  duracion = rs.getString("DURACIONLLAMADA");
-		    	  System.out.println(duracion);
+		    	  
 			      double tarifa = rs.getDouble("TARIFA");
 			      cdr.setTelfOrigen(telf_origen);
 			      cdr.setTelfDestino(telf_destino);
@@ -151,7 +149,7 @@ public class CDRSqlRepository implements PersistenciaCDR{
 					count=count+1;
 					contacto = linea.split(",");
 					CDR cdr = new CDR();
-					//cdr.setId(getNextId());
+					
 					cdr.setTelfOrigen(contacto[0]);
 					cdr.setTelfDestino(contacto[1]);
 					cdr.setFecha(contacto[2]);
@@ -168,40 +166,6 @@ public class CDRSqlRepository implements PersistenciaCDR{
 		}
 		return count;
 	}
-	/*public int saveAndTarifyFromArchive(Path path,int id_t) {
-		int count=0;
-		PersistenciaLinea persis=new LineaSqlRepository();
-		try {
-			File f = path.toFile();
-			if(f.exists()) {
-				FileReader fr = new FileReader(f);
-				BufferedReader br = new BufferedReader(fr);
-				String linea;
-				linea = br.readLine();//header
-				linea = br.readLine();//firstline
-				String [] contacto;
-				while(linea != null) {
-					count=count+1;
-					contacto = linea.split(",");
-					CDR cdr = new CDR();
-					cdr.setTelfOrigen(contacto[0]);
-					cdr.setTelfDestino(contacto[1]);
-					cdr.setFecha(contacto[2]);
-					cdr.setHoraLlamada(contacto[3]);
-					cdr.setDuracionLlamada(contacto[4]);
-						cdr.calcularTarifaSegunLinea(persis.getLineaByNumero(contacto[0]));
-					guardarCDR(cdr,id_t);
-					linea = br.readLine();
-				}
-				br.close();
-			}
-			
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return count;
-	}*/
-	
 	
 	public List<CDR> getCDRSbyTarificationId(int id) {
 		List<CDR> lista=new ArrayList<CDR>();

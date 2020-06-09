@@ -1,8 +1,5 @@
 package Repositories;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -29,7 +26,6 @@ public class TarificacionSqlRepository implements PersistenciaTarificacion{
 	                      "(ID INTEGER PRIMARY KEY	AUTOINCREMENT NOT NULL, " +
 	                      "FECHA	TEXT	NOT NULL, " + 
 	                      "TIPO	TEXT	NOT NULL)";
-	       System.out.println(sql);
 	         stmt.executeUpdate(sql);
 	         stmt.close();
 	         c.close();
@@ -41,7 +37,7 @@ public class TarificacionSqlRepository implements PersistenciaTarificacion{
 	}
 	public void guardarTarificacion(Tarificacion tarificacion) {
 		this.createTable();
-		//tarificacion.setId(getNextId());
+		
 		Connection c = null;
 	    Statement stmt = null;
 	    LocalDateTime now=LocalDateTime.now();
@@ -54,7 +50,7 @@ public class TarificacionSqlRepository implements PersistenciaTarificacion{
 	       String sql = "INSERT INTO TARIFICACION (FECHA,TIPO) " +
 	                      "VALUES ('"+now.toString()
 	                      +"','"+tarificacion.getTipo()+"');";
-	       System.out.println(sql);
+	       
 	       stmt.executeUpdate(sql);
 	       stmt.close();
 	       c.commit();
@@ -71,6 +67,7 @@ public class TarificacionSqlRepository implements PersistenciaTarificacion{
 		Connection c = null;
 	    Statement stmt = null;
 	    Tarificacion tarificacion=null;
+	    this.createTable();
 	    try {
 		      Class.forName("org.sqlite.JDBC");
 		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
@@ -103,6 +100,7 @@ public class TarificacionSqlRepository implements PersistenciaTarificacion{
 		Connection c = null;
 	    Statement stmt = null;
 	    Tarificacion tarificacion=null;
+	    this.createTable();
 	    try {
 		      Class.forName("org.sqlite.JDBC");
 		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
@@ -135,6 +133,7 @@ public class TarificacionSqlRepository implements PersistenciaTarificacion{
 		int id=1;
 		Connection c = null;
 	    Statement stmt1 = null;
+	    this.createTable();
 	    try {
 		      Class.forName("org.sqlite.JDBC");
 		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");

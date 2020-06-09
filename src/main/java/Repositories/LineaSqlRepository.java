@@ -1,8 +1,5 @@
 package Repositories;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.nio.file.Path;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -11,13 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTOs.LineaDTO;
-import Entities.CDR;
+
 import Entities.Linea;
-import Entities.Plan;
+
 import Entities.PlanFactory;
-import Entities.PlanPostpago;
-import Entities.PlanPrepago;
-import Entities.PlanWow;
+
 import Gateways.PersistenciaLinea;
 
 public class LineaSqlRepository implements PersistenciaLinea{
@@ -39,7 +34,7 @@ public class LineaSqlRepository implements PersistenciaLinea{
 	                      "NUMERO_AMIGO_2	TEXT, " +
 	                      "NUMERO_AMIGO_3	TEXT, " +
 	                      "NUMERO_AMIGO_4	TEXT)";
-	       System.out.println(sql);
+	       
 	         stmt.executeUpdate(sql);
 	         stmt.close();
 	         c.close();
@@ -84,7 +79,6 @@ public class LineaSqlRepository implements PersistenciaLinea{
 	       }else {
 	    	   values="VALUES ("+linea.getNumero()+",'"+linea.getNombreUsuario()+"','"+linea.getPlan().getNombre()+"'";
 	    	   
-	    	   System.out.println(numerosAmigos.size());
 	    	   for(int i=0;i<numerosAmigos.size();i++) { //concatenamos el campo de numeros amigos de la linea
 	    		   values=values.concat(",");
 	    		   values=values.concat(numerosAmigos.get(i));
@@ -104,6 +98,7 @@ public class LineaSqlRepository implements PersistenciaLinea{
 		Connection c = null;
 	    Statement stmt = null;
 	    Linea linea=null;
+	    this.createTable();
 	    try {
 		      Class.forName("org.sqlite.JDBC");
 		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
@@ -139,7 +134,7 @@ public class LineaSqlRepository implements PersistenciaLinea{
 			    	  numerosAmigos.add(telf_amigo3);
 			    	  
 			    	  numerosAmigos.add(telf_amigo4);
-			    	  //numerosAmigos.removeAll(null);
+			    	  
 			    	  linea.setPlan(factory.generarPlanByName(plan,numerosAmigos));
 			      }
 				  
@@ -158,6 +153,7 @@ public class LineaSqlRepository implements PersistenciaLinea{
 		Connection c = null;
 	    Statement stmt = null;
 	    Linea linea=null;
+	    this.createTable();
 	    try {
 		      Class.forName("org.sqlite.JDBC");
 		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");
@@ -189,7 +185,7 @@ public class LineaSqlRepository implements PersistenciaLinea{
 			    	  numerosAmigos.add(telf_amigo2);
 			    	  numerosAmigos.add(telf_amigo3);
 			    	  numerosAmigos.add(telf_amigo4);
-			    	  //numerosAmigos.removeAll(null);
+			    	  
 			    	  linea.setPlan(factory.generarPlanByName(plan,numerosAmigos));
 			      }
 				  lista.add(linea);
@@ -206,50 +202,11 @@ public class LineaSqlRepository implements PersistenciaLinea{
 	}
 	
 	
-	/*public int saveFromArchive(Path archive) {
-		int count=0;
-		try {
-			File f = archive.toFile();
-
-			if(f.exists()) {
-				FileReader fr = new FileReader(f);
-				BufferedReader br = new BufferedReader(fr);
-				String linea;
-				linea = br.readLine();//header
-				linea = br.readLine();//firstline
-				String [] contacto;
-				PlanFactory factory=new PlanFactory();
-				while(linea != null) {
-					count=count+1;
-					linea=linea.replace("[", "");
-					linea=linea.replace("]", "");
-					System.out.println(linea);
-					contacto = linea.split(",");
-					Linea lineaTelef = new Linea();
-					lineaTelef.setNumero(contacto[0]);
-					lineaTelef.setNombreUsuario(contacto[1]);
-					//lineaTelef.setPlan(factory.generarPlanByName(contacto[2]));
-					for(int i=3;i<contacto.length;i++) {
-						//lineaTelef.addNumeroAmigo(contacto[i]);
-					}
-					//guardarLinea(lineaTelef);
-					linea = br.readLine();
-				}
-				br.close();
-			}
-			
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return count;
-	}*/
-	
-	
 	public boolean exists(String numero) {
 		boolean resp=false;
 		Connection c = null;
 	    Statement stmt = null;
-	   
+	    this.createTable();
 	    try {
 		      Class.forName("org.sqlite.JDBC");
 		      c = DriverManager.getConnection("jdbc:sqlite:CLARO.db");

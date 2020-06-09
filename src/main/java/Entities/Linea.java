@@ -1,26 +1,17 @@
 package Entities;
-import java.util.ArrayList;
-import java.util.List;
-
-import DTOs.LineaDTO;
-import Gateways.PersistenciaLinea;
 
 public class Linea {	
 	private String numero;
-	private String nombrePropietario;
+	private String nombreUsuario;
 	private Plan plan;
 	
 	public Linea(){	}
 	
 	public Linea(String numero,String nombrePropietario,Plan plan) {
 		this.numero=numero;
-		this.nombrePropietario=nombrePropietario;
+		this.nombreUsuario=nombrePropietario;
 		this.plan=plan;
 	}
-	
-	/*public void guardar(PersistenciaLinea repository) {
-		repository.guardarLinea(this);
-	}*/
 	
 	public String getNumero() {
 		return numero;
@@ -29,10 +20,10 @@ public class Linea {
 		this.numero = numero;
 	}
 	public String getNombreUsuario() {
-		return nombrePropietario;
+		return nombreUsuario;
 	}
 	public void setNombreUsuario(String nombreUsuario) {
-		this.nombrePropietario = nombreUsuario;
+		this.nombreUsuario = nombreUsuario;
 	}
 	public void setPlan(Plan plan) {
 		this.plan=plan;

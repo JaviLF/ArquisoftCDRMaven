@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import Entities.CDR;
 import Entities.Tarificacion;
 import Gateways.PersistenciaTarificacion;
 
