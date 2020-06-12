@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import Entities.Tarificacion;
+import Interactors.GestionarConfiguracionPersistenciaUseCase;
 import Interactors.ObtenerTarificacionesUseCase;
 
 import spark.ModelAndView;
@@ -22,9 +23,12 @@ public class HomeController {
 		redirect.get("/","/archivo");
 		
 	    get("/:tipo", (request, response) -> {
-		       Map<String, Object> viewObjects = new HashMap<String, Object>();
-		           viewObjects.put("tipo", request.params(":tipo"));
-		           return engine.render(new ModelAndView(viewObjects, "UploadLineas"));
+	    	GestionarConfiguracionPersistenciaUseCase configuracion=new GestionarConfiguracionPersistenciaUseCase();
+	    	configuracion.seleccionarPersistencia(":tipo");
+	    	
+		    Map<String, Object> viewObjects = new HashMap<String, Object>();
+		    viewObjects.put("tipo", request.params(":tipo"));
+		    return engine.render(new ModelAndView(viewObjects, "UploadLineas"));
 		           
 		});
 		get("/:tipo/GetCDRFile", (request, response)->{

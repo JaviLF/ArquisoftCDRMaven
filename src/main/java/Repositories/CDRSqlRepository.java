@@ -70,6 +70,7 @@ public class CDRSqlRepository implements PersistenciaCDR{
 	    cdr.setId(getLastId());
 	}
 	public CDR getCDR(int id) {
+		this.createTable();
 		Connection c = null;
 	    Statement stmt = null;
 	    CDR cdr=null;
@@ -111,6 +112,7 @@ public class CDRSqlRepository implements PersistenciaCDR{
 	    return cdr;
 	}
 	public int getLastId(){
+		this.createTable();
 		int id=1;
 		Connection c = null;
 	    Statement stmt1 = null;
@@ -168,6 +170,7 @@ public class CDRSqlRepository implements PersistenciaCDR{
 	}
 	
 	public List<CDR> getCDRSbyTarificationId(int id) {
+		this.createTable();
 		List<CDR> lista=new ArrayList<CDR>();
 		Connection c = null;
 	    Statement stmt = null;
@@ -210,6 +213,7 @@ public class CDRSqlRepository implements PersistenciaCDR{
 	    return lista;
 	}
 	public List<CDR> getCDRSbyTelfOrigen(String telfOrigen) {
+		this.createTable();
 		List<CDR> lista=new ArrayList<CDR>();
 		Connection c = null;
 	    Statement stmt = null;

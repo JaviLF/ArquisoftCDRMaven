@@ -10,13 +10,13 @@ import Interactors.ObtenerLineaUseCase;
 public class APIController {
 	
 	public void main() {
-		get("/:tipo/facturar/:numero",(request,response)->{
+		get("/:tipo/facturar/:numero/:mes",(request,response)->{
 			ObtenerLineaUseCase obtenerLinea=new ObtenerLineaUseCase();
 			GenerarDatosFacturaJSON resp=new GenerarDatosFacturaJSON();
 			if(obtenerLinea.getLinea(request.params(":numero"), request.params(":tipo"))==null){
 				return "{}";
 			}else {
-				return resp.getJSON(obtenerLinea.getLinea(request.params(":numero"), request.params(":tipo")));
+				return resp.getJSON(obtenerLinea.getLinea(request.params(":numero"), request.params(":tipo")),Integer.parseInt(request.params(":mes")));
 			}
 		});
 	}

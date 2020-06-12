@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import DTOs.LineaDTO;
-import DTOs.PlanDTO;
+//import DTOs.PlanDTO;
 import Entities.CDR;
 import Entities.Linea;
 import Entities.Plan;
@@ -18,13 +18,13 @@ import Entities.TarifaPorHoras;
 import Entities.Tarificacion;
 import Gateways.PersistenciaCDR;
 import Gateways.PersistenciaLinea;
-import Gateways.PersistenciaPlan;
+//import Gateways.PersistenciaPlan;
 import Gateways.PersistenciaTarificacion;
 import Repositories.CDRFileRepository;
 import Repositories.CDRSqlRepository;
 import Repositories.LineaFileRepository;
 import Repositories.LineaSqlRepository;
-import Repositories.PersistenciaPlanSql;
+//import Repositories.PersistenciaPlanSql;
 import Repositories.TarificacionFileRepository;
 import Repositories.TarificacionSqlRepository;
 
@@ -143,7 +143,7 @@ class PersitenciaTest {
 		PersistenciaPlan persi = new PersistenciaPlanSql();
 		boolean expected = true;
 		assertEquals(expected,persi.planExists("PREPAGO"));
-	}*/
+	}
 
 	@Test
 	void DBreturnsTrueWhenNewPlanIsSavedOrAlreadyExists() {
@@ -158,20 +158,20 @@ class PersitenciaTest {
 		assertEquals(expected2,persi.planExists("PREPAGO"));
 	}
 	
-	/*@Test
+	@Test
 	void loadsAListOfPlans() {
 		PersistenciaPlan persi = new PersistenciaPlanSql();
 		List<Plan> actual = persi.loadPlans();
 		Plan expected = actual.get(0);
 		assertEquals(expected,actual.get(0));
-	}*/
+	}
 
 	@Test
 	void DBshouldReturnPlanTableExistsIfItIsNotAlreadyStoredinDB() {
 		PersistenciaPlan persi = new PersistenciaPlanSql();
 		boolean expected = false;
 		assertEquals(expected,persi.planExists("POSTPAGO"));
-	}
+	}*/
 	
 	
 }
