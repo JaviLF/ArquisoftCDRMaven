@@ -36,47 +36,43 @@
 	    <br></br>
 		<div class="jumbotron text-center">
 			<table class="table table-bordered table-dark" style="border:1px solid black;margin-left:auto;margin-right:auto;">
-				    <tr>
-				        <th>
-				            Telf_Origen
-				        </th>
-				         <th>
-				            Telf_Destino
-				        </th>
-				         <th>
-				            Fecha
-				        </th>
-				        <th>
-				            Hora_Llamada
-				        </th>
-				        <th>
-				            Duracion_Llamada
-				        </th>
-				        <th style="background-color: #4CAF50;color: white;">
-				            COSTO
-				        </th>
-				    </tr>
-				
-				    <tr th:each="cdr : ${CDRSIngresados}">
-				        <td th:text="${cdr.telfOrigen}">
-				        </td>
-				        <td th:text="${cdr.telfDestino}">
-				        </td>
-				        <td th:text="${cdr.fecha}">
-				        </td>
-				        <td th:text="${cdr.horaLlamada}">
-				        </td>
-				        <td th:text="${cdr.duracionLlamada}">
-				        </td>
-				        <td th:text="${cdr.tarifa}">
-				        </td>
-					</tr>
-				</table>
-				<td th:text="${cant}">
-				</td>
-				<p>CDRs ingresados</p>
-				<td th:text="${message}">
-				</td>
+			    <tr>
+			        <th>
+			            Telf_Origen
+			        </th>
+			         <th>
+			            Telf_Destino
+			        </th>
+			         <th>
+			            Fecha
+			        </th>
+			        <th>
+			            Hora_Llamada
+			        </th>
+			        <th>
+			            Duracion_Llamada
+			        </th>
+			    </tr>
+			
+			    <tr th:each="cdr : ${CDRSIngresados}">
+			        <td th:text="${cdr.telfOrigen}">
+			        </td>
+			        <td th:text="${cdr.telfDestino}">
+			        </td>
+			        <td th:text="${cdr.fecha}">
+			        </td>
+			        <td th:text="${cdr.horaLlamada}">
+			        </td>
+			        <td th:text="${cdr.duracionLlamada}">
+			        </td>
+				</tr>
+			</table>
+			<form method="post" th:action="${'/'+tipo+'/saveCDRs'}" >
+		        <input type="hidden" name='filePath' th:value="${filePath}"></input>
+		        <input class="btn btn-primary" type="submit" value="TARIFICAR y REGISTRAR CDRs"></input>
+	      	</form>
+	      	<br></br>
+			<a role="button" th:href="${'/'+tipo+'/GetCDRFile'}" class="btn btn-secondary btn-lg">CANCELAR</a>
 		</div>
 	</body>
 </html>
