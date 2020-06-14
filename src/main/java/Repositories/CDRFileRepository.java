@@ -92,41 +92,8 @@ public class CDRFileRepository implements PersistenciaCDR{
 		return id;
 	}
 	
-	
-	public int saveFromArchive(String archive,int id_t) {
-		int count=0;
-		try {
-			File f = new File(archive);
-			if(f.exists()) {
-				FileReader fr = new FileReader(f);
-				BufferedReader br = new BufferedReader(fr);
-				String linea;
-				linea = br.readLine();//header
-				linea = br.readLine();//firstline
-				String [] contacto;
-				while(linea != null) {
-					count=count+1;
-					contacto = linea.split(",");
-					CDR cdr = new CDR();
-					cdr.setTelfOrigen(contacto[0]);
-					cdr.setTelfDestino(contacto[1]);
-					cdr.setFecha(contacto[2]);
-					cdr.setHoraLlamada(contacto[3]);
-					cdr.setDuracionLlamada(contacto[4]);
-					guardarCDR(cdr,id_t);
-					linea = br.readLine();
-				}
-				br.close();
-			}
-			
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return count;
-	}
-	
 	public List<CDR> getCDRSbyTarificationId(int id) {
-		List<CDR> lista=new ArrayList<CDR>();
+		List<CDR> listaCDRs=new ArrayList<CDR>();
 		try {
 			File f = new File("cdrs_register.txt");
 			if(f.exists()) {
@@ -148,7 +115,7 @@ public class CDRFileRepository implements PersistenciaCDR{
 						cdr.setHoraLlamada(contacto[4]);
 						cdr.setDuracionLlamada(contacto[5]);
 						cdr.setTarifa(Double.parseDouble(contacto[6]));
-						lista.add(cdr);
+						listaCDRs.add(cdr);
 					}
 					linea = br.readLine();
 				}
@@ -158,10 +125,10 @@ public class CDRFileRepository implements PersistenciaCDR{
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-	    return lista;
+	    return listaCDRs;
 	}
 	public List<CDR> getCDRSbyTelfOrigen(String telfOrigen) {
-		List<CDR> lista=new ArrayList<CDR>();
+		List<CDR> listaCDRs=new ArrayList<CDR>();
 		try {
 			File f = new File("cdrs_register.txt");
 			if(f.exists()) {
@@ -183,7 +150,7 @@ public class CDRFileRepository implements PersistenciaCDR{
 						cdr.setHoraLlamada(contacto[4]);
 						cdr.setDuracionLlamada(contacto[5]);
 						cdr.setTarifa(Double.parseDouble(contacto[6]));
-						lista.add(cdr);
+						listaCDRs.add(cdr);
 					}
 					linea = br.readLine();
 				}
@@ -193,6 +160,6 @@ public class CDRFileRepository implements PersistenciaCDR{
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-	    return lista;
+	    return listaCDRs;
 	}
 }

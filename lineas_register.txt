@@ -1,0 +1,4 @@
+TELEFONO%PROPIETARIO%PLAN%NUMERO_AMIGO_1%NUMERO_AMIGO_2%NUMERO_AMIGO_3%NUMERO_AMIGO_4
+70712345%Jose Perez%prepago%null%null%null%null
+70754321%Ramiro Rodriguez%postpago%null%null%null%null
+707789012%Pamela Fuentes%wow%70712345%70754321%null%null

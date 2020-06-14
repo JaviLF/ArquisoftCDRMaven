@@ -5,10 +5,10 @@ import Gateways.PersistenciaTarificacion;
 import Repositories.TarificacionFileRepository;
 import Repositories.TarificacionSqlRepository;
 
-public class ObtenerTarificacionUseCase {
-	public Tarificacion getTarificacion(int id,String tipo) {
+public class AgregarTarificacion {
+	public Tarificacion agregarTarificacion(String tipoPersistencia) {
 		PersistenciaTarificacion persistencia=null;
-		switch(tipo) {
+		switch(tipoPersistencia) {
 		case("sql"):
 			persistencia=new TarificacionSqlRepository();
 			break;
@@ -16,6 +16,8 @@ public class ObtenerTarificacionUseCase {
 			persistencia=new TarificacionFileRepository();
 			break;
 		}
-		return persistencia.getTarificacionById(id);
+		Tarificacion tarificacion = new Tarificacion(tipoPersistencia);
+		persistencia.guardarTarificacion(tarificacion);
+		return tarificacion;
 	}
 }

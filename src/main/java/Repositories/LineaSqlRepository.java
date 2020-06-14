@@ -9,13 +9,13 @@ import java.util.List;
 
 import DTOs.LineaDTO;
 
-import Entities.Linea;
+import Entities.LineaTelefonica;
 
 import Entities.PlanFactory;
 
-import Gateways.PersistenciaLinea;
+import Gateways.PersistenciaLineaTelefonica;
 
-public class LineaSqlRepository implements PersistenciaLinea{
+public class LineaSqlRepository implements PersistenciaLineaTelefonica{
 	public void createTable() {
 		Connection c = null;
 		Statement stmt = null;
@@ -44,10 +44,10 @@ public class LineaSqlRepository implements PersistenciaLinea{
 	      }
 	      System.out.println("Table created successfully");
 	}
-	public void guardarLinea(LineaDTO DTO) {
-		Linea linea=DTO.getLinea();
+	public void guardarLineaTelefonica(LineaDTO DTO) {
+		LineaTelefonica lineaTelefonica=DTO.getLinea();
 		this.createTable();
-		if(exists(linea.getNumero())==false) {
+		if(exists(lineaTelefonica.getNumero())==false) {
 			Connection c = null;
 		    Statement stmt = null;
 		    try {
@@ -71,13 +71,13 @@ public class LineaSqlRepository implements PersistenciaLinea{
 		}
 	}
 	public String generateValues(LineaDTO DTO) {
-		Linea linea=DTO.getLinea();
+		LineaTelefonica lineaTelefonica=DTO.getLinea();
 		List<String> numerosAmigos=DTO.getNumerosAmigos();
 		String values;
-	       if(linea.getPlan().getNombre()!="wow"||numerosAmigos==null) {
-	    	   values="VALUES ("+linea.getNumero()+",'"+linea.getNombreUsuario()+"','"+linea.getPlan().getNombre()+"',"+null+","+null+","+null+","+null+");";
+	       if(lineaTelefonica.getPlan().getNombre()!="wow"||numerosAmigos==null) {
+	    	   values="VALUES ("+lineaTelefonica.getNumero()+",'"+lineaTelefonica.getNombreUsuario()+"','"+lineaTelefonica.getPlan().getNombre()+"',"+null+","+null+","+null+","+null+");";
 	       }else {
-	    	   values="VALUES ("+linea.getNumero()+",'"+linea.getNombreUsuario()+"','"+linea.getPlan().getNombre()+"'";
+	    	   values="VALUES ("+lineaTelefonica.getNumero()+",'"+lineaTelefonica.getNombreUsuario()+"','"+lineaTelefonica.getPlan().getNombre()+"'";
 	    	   
 	    	   for(int i=0;i<numerosAmigos.size();i++) { //concatenamos el campo de numeros amigos de la linea
 	    		   values=values.concat(",");
@@ -94,10 +94,10 @@ public class LineaSqlRepository implements PersistenciaLinea{
 	      return values;
 	}
 	
-	public Linea getLineaByNumero(String numero) {
+	public LineaTelefonica getLineaTelefonicaByNumero(String numero) {
 		Connection c = null;
 	    Statement stmt = null;
-	    Linea linea=null;
+	    LineaTelefonica lineaTelefonica=null;
 	    this.createTable();
 	    try {
 		      Class.forName("org.sqlite.JDBC");
@@ -109,7 +109,7 @@ public class LineaSqlRepository implements PersistenciaLinea{
 		      ResultSet rs = stmt.executeQuery( "SELECT * FROM LINEA WHERE TELEFONO ="+numero+ ";" );
 		      
 		      while ( rs.next() ) {
-		    	  linea=new Linea();
+		    	  lineaTelefonica=new LineaTelefonica();
 		    	  List<String> numerosAmigos=new ArrayList<String>();
 		    	  
 		    	  String numeroLinea = rs.getString("TELEFONO");
@@ -120,11 +120,11 @@ public class LineaSqlRepository implements PersistenciaLinea{
 		    	  String  telf_amigo3 = rs.getString("NUMERO_AMIGO_3");
 		    	  String  telf_amigo4 = rs.getString("NUMERO_AMIGO_4");
 		    	  
-		    	  linea.setNombreUsuario(usuario);
-			      linea.setNumero(numeroLinea);
+		    	  lineaTelefonica.setNombreUsuario(usuario);
+			      lineaTelefonica.setNumero(numeroLinea);
 			      PlanFactory factory=new PlanFactory();
 			      if(telf_amigo1==null) {
-			    	  linea.setPlan(factory.generarPlanByName(plan,null));
+			    	  lineaTelefonica.setPlan(factory.generarPlanByName(plan,null));
 			      }else{
 			    	  
 			    	  numerosAmigos.add(telf_amigo1);
@@ -135,7 +135,7 @@ public class LineaSqlRepository implements PersistenciaLinea{
 			    	  
 			    	  numerosAmigos.add(telf_amigo4);
 			    	  
-			    	  linea.setPlan(factory.generarPlanByName(plan,numerosAmigos));
+			    	  lineaTelefonica.setPlan(factory.generarPlanByName(plan,numerosAmigos));
 			      }
 				  
 		      }
@@ -146,13 +146,13 @@ public class LineaSqlRepository implements PersistenciaLinea{
 		      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		      System.exit(0);
 		   }
-	    return linea;
+	    return lineaTelefonica;
 	}
-	public List<Linea> getLineas(){
-		List<Linea> lista= new ArrayList<Linea>();
+	public List<LineaTelefonica> getLineasTelefonicas(){
+		List<LineaTelefonica> listaLineasTelefonicas= new ArrayList<LineaTelefonica>();
 		Connection c = null;
 	    Statement stmt = null;
-	    Linea linea=null;
+	    LineaTelefonica lineaTelefonica=null;
 	    this.createTable();
 	    try {
 		      Class.forName("org.sqlite.JDBC");
@@ -164,7 +164,7 @@ public class LineaSqlRepository implements PersistenciaLinea{
 		      ResultSet rs = stmt.executeQuery( "SELECT * FROM LINEA;" );
 		      
 		      while ( rs.next() ) {
-		    	  linea=new Linea();
+		    	  lineaTelefonica=new LineaTelefonica();
 		    	  List<String> numerosAmigos=new ArrayList<String>();
 		    	  
 		    	  String numeroLinea = rs.getString("TELEFONO");
@@ -175,20 +175,20 @@ public class LineaSqlRepository implements PersistenciaLinea{
 		    	  String  telf_amigo3 = rs.getString("NUMERO_AMIGO_3");
 		    	  String  telf_amigo4 = rs.getString("NUMERO_AMIGO_4");
 		    	  
-		    	  linea.setNombreUsuario(usuario);
-			      linea.setNumero(numeroLinea);
+		    	  lineaTelefonica.setNombreUsuario(usuario);
+			      lineaTelefonica.setNumero(numeroLinea);
 			      PlanFactory factory=new PlanFactory();
 			      if(telf_amigo1==null) {
-			    	  linea.setPlan(factory.generarPlanByName(plan,null));
+			    	  lineaTelefonica.setPlan(factory.generarPlanByName(plan,null));
 			      }else{
 			    	  numerosAmigos.add(telf_amigo1);
 			    	  numerosAmigos.add(telf_amigo2);
 			    	  numerosAmigos.add(telf_amigo3);
 			    	  numerosAmigos.add(telf_amigo4);
 			    	  
-			    	  linea.setPlan(factory.generarPlanByName(plan,numerosAmigos));
+			    	  lineaTelefonica.setPlan(factory.generarPlanByName(plan,numerosAmigos));
 			      }
-				  lista.add(linea);
+				  listaLineasTelefonicas.add(lineaTelefonica);
 		      }
 		      rs.close();
 		      stmt.close();
@@ -198,7 +198,7 @@ public class LineaSqlRepository implements PersistenciaLinea{
 		      System.exit(0);
 		   }
 		
-		return lista;
+		return listaLineasTelefonicas;
 	}
 	
 	

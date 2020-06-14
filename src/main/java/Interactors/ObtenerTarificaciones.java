@@ -7,10 +7,10 @@ import Gateways.PersistenciaTarificacion;
 import Repositories.TarificacionFileRepository;
 import Repositories.TarificacionSqlRepository;
 
-public class ObtenerTarificacionesUseCase {
-	public List<Tarificacion> obtenerTarificaciones(String tipo){
+public class ObtenerTarificaciones {
+	public List<Tarificacion> obtenerTarificaciones(String tipoPersistencia){
 		PersistenciaTarificacion persistencia=null;
-		switch(tipo) {
+		switch(tipoPersistencia) {
 		case("sql"):
 			persistencia=new TarificacionSqlRepository();
 			break;

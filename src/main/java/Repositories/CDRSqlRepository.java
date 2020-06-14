@@ -135,43 +135,9 @@ public class CDRSqlRepository implements PersistenciaCDR{
 		return id;
 	}
 	
-	
-	public int saveFromArchive(String archive,int id_t) {
-		int count=0;
-		try {
-			File f = new File(archive);
-			if(f.exists()) {
-				FileReader fr = new FileReader(f);
-				BufferedReader br = new BufferedReader(fr);
-				String linea;
-				linea = br.readLine();//header
-				linea = br.readLine();//firstline
-				String [] contacto;
-				while(linea != null) {
-					count=count+1;
-					contacto = linea.split(",");
-					CDR cdr = new CDR();
-					
-					cdr.setTelfOrigen(contacto[0]);
-					cdr.setTelfDestino(contacto[1]);
-					cdr.setFecha(contacto[2]);
-					cdr.setHoraLlamada(contacto[3]);
-					cdr.setDuracionLlamada(contacto[4]);
-					guardarCDR(cdr,id_t);
-					linea = br.readLine();
-				}
-				br.close();
-			}
-			
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return count;
-	}
-	
 	public List<CDR> getCDRSbyTarificationId(int id) {
 		this.createTable();
-		List<CDR> lista=new ArrayList<CDR>();
+		List<CDR> listaCDRs=new ArrayList<CDR>();
 		Connection c = null;
 	    Statement stmt = null;
 	    CDR cdr=null;
@@ -201,7 +167,7 @@ public class CDRSqlRepository implements PersistenciaCDR{
 			      cdr.setDuracionLlamada(duracion.replace('a', ':'));
 			      cdr.setId(CDRid);
 			      cdr.setTarifa(tarifa);
-			      lista.add(cdr);
+			      listaCDRs.add(cdr);
 		      }
 		      rs.close();
 		      stmt.close();
@@ -210,11 +176,11 @@ public class CDRSqlRepository implements PersistenciaCDR{
 		      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		      System.exit(0);
 		   }
-	    return lista;
+	    return listaCDRs;
 	}
 	public List<CDR> getCDRSbyTelfOrigen(String telfOrigen) {
 		this.createTable();
-		List<CDR> lista=new ArrayList<CDR>();
+		List<CDR> listaCDRs=new ArrayList<CDR>();
 		Connection c = null;
 	    Statement stmt = null;
 	    CDR cdr=null;
@@ -244,7 +210,7 @@ public class CDRSqlRepository implements PersistenciaCDR{
 			      cdr.setDuracionLlamada(duracion.replace('a', ':'));
 			      cdr.setId(CDRid);
 			      cdr.setTarifa(tarifa);
-			      lista.add(cdr);
+			      listaCDRs.add(cdr);
 		      }
 		      rs.close();
 		      stmt.close();
@@ -253,6 +219,6 @@ public class CDRSqlRepository implements PersistenciaCDR{
 		      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		      System.exit(0);
 		   }
-	    return lista;
+	    return listaCDRs;
 	}
 }

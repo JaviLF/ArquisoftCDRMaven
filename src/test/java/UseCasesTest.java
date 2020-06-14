@@ -10,38 +10,38 @@ import DTOs.LineaDTO;
 import Entities.CDR;
 import Entities.Tarificacion;
 import Gateways.PersistenciaCDR;
-import Gateways.PersistenciaLinea;
-import Interactors.GuardarLineasUseCase;
-import Interactors.ObtenerYValidarCDRsDeArchivoUseCase;
-import Interactors.ObtenerCDRsSegunTarificacionUseCase;
-import Interactors.ObtenerYValidarLineasTelefonicasDeArchivoUseCase;
-import Interactors.AgregarTarificacionUseCase;
-import Interactors.ObtenerTarificacionesUseCase;
-import Interactors.GestionarConfiguracionPersistenciaUseCase;
-import Interactors.TarificarYGuardarCDRsUseCase;
+import Gateways.PersistenciaLineaTelefonica;
+import Interactors.GuardarLineas;
+import Interactors.ObtenerYValidarCDRsDeArchivo;
+import Interactors.ObtenerCDRsSegunTarificacion;
+import Interactors.ObtenerYValidarLineasTelefonicasDeArchivo;
+import Interactors.AgregarTarificacion;
+import Interactors.ObtenerTarificaciones;
+import Interactors.GestionarConfiguracionPersistencia;
+import Interactors.TarificarYGuardarCDRs;
 import Repositories.LineaSqlRepository;
 
 class UseCasesTest { 
 
 	@Test
 	void FlujoTarificacionDesdeArchivoTest() {  
-		ObtenerYValidarLineasTelefonicasDeArchivoUseCase OLTDAUC= new ObtenerYValidarLineasTelefonicasDeArchivoUseCase();
-		List<LineaDTO> lineasAIngresar=OLTDAUC.ObtenerLineasDeArchivo(Paths.get("C:/Users/PC/Desktop/ejemplo_entrada_lineas.txt"));
-		GuardarLineasUseCase GLUC=new GuardarLineasUseCase();
-		GestionarConfiguracionPersistenciaUseCase selecP = new GestionarConfiguracionPersistenciaUseCase();
+		ObtenerYValidarLineasTelefonicasDeArchivo OLTDAUC= new ObtenerYValidarLineasTelefonicasDeArchivo();
+		List<LineaDTO> lineasAIngresar=OLTDAUC.ObtenerLineasDeArchivo(Paths.get("ejemplo_entrada_lineas.txt"));
+		GuardarLineas GLUC=new GuardarLineas();
+		GestionarConfiguracionPersistencia selecP = new GestionarConfiguracionPersistencia();
 		selecP.seleccionarPersistencia("sql");
 		
 		assertEquals(3,GLUC.guardarLineasDesdeArchivo(lineasAIngresar, selecP.getPersistenciaLinea()).size());
 		
 		
-		AgregarTarificacionUseCase agreT = new AgregarTarificacionUseCase();
+		AgregarTarificacion agreT = new AgregarTarificacion();
 		Tarificacion tarificacion=agreT.agregarTarificacion("sql");
 		
 		
 		
-		ObtenerYValidarCDRsDeArchivoUseCase OCDAUC= new ObtenerYValidarCDRsDeArchivoUseCase();
-		List<CDR> cdrsAIngresar=OCDAUC.ObtenerCDRsDeArchivo(Paths.get("C:/Users/PC/Desktop/ejemplo_entrada_cdrs.txt"));
-		TarificarYGuardarCDRsUseCase TYGCUC=new TarificarYGuardarCDRsUseCase();
+		ObtenerYValidarCDRsDeArchivo OCDAUC= new ObtenerYValidarCDRsDeArchivo();
+		List<CDR> cdrsAIngresar=OCDAUC.ObtenerCDRsDeArchivo(Paths.get("ejemplo_entrada_cdrs.txt"));
+		TarificarYGuardarCDRs TYGCUC=new TarificarYGuardarCDRs();
 
 		assertEquals(6,TYGCUC.agregarCDR(cdrsAIngresar, selecP.getPersistenciaCDR(), selecP.getPersistenciaLinea(), tarificacion.getId()).size());
 		
@@ -49,10 +49,10 @@ class UseCasesTest {
 		selecP.seleccionarPersistencia("archivo");
 		assertEquals(3,GLUC.guardarLineasDesdeArchivo(lineasAIngresar, selecP.getPersistenciaLinea()).size());
 		
-		ObtenerTarificacionesUseCase OTUC=new ObtenerTarificacionesUseCase();
+		ObtenerTarificaciones OTUC=new ObtenerTarificaciones();
 		assertFalse(OTUC.obtenerTarificaciones("sql").isEmpty());
 		
-		ObtenerCDRsSegunTarificacionUseCase OCSTUC=new ObtenerCDRsSegunTarificacionUseCase();
+		ObtenerCDRsSegunTarificacion OCSTUC=new ObtenerCDRsSegunTarificacion();
 		assertFalse(OCSTUC.obtenerCDRS(tarificacion).isEmpty());
 	}
 	

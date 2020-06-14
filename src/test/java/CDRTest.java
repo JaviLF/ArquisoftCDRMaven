@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import Entities.CDR;
-import Entities.Linea;
+import Entities.LineaTelefonica;
 import Entities.Plan;
 import Entities.PlanPostpago;
 import Entities.PlanPrepago;
@@ -55,7 +55,7 @@ class CDRTest {
 		List<String>numerosAmigos=new ArrayList<String>();
 		numerosAmigos.add("2222");
 		Plan wow= new PlanWow(new TarifaFija(),numerosAmigos);
-		Linea linea1=new Linea("5555","Javi",prepago);
+		LineaTelefonica linea1=new LineaTelefonica("5555","Javi",prepago);
 		
 			//linea1.getPlan().setTarifa(new TarifaPorHoras());
 		cdr3.calcularTarifaSegunLinea(linea1);

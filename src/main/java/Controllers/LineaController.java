@@ -15,12 +15,12 @@ import javax.servlet.MultipartConfigElement;
 
 
 import DTOs.LineaDTO;
-import Entities.Linea;
+import Entities.LineaTelefonica;
 
-import Interactors.GestionarConfiguracionPersistenciaUseCase;
-import Interactors.GuardarLineasUseCase;
-import Interactors.ObtenerYValidarLineasTelefonicasDeArchivoUseCase;
-import Interactors.ObtenerLineasUseCase;
+import Interactors.GestionarConfiguracionPersistencia;
+import Interactors.GuardarLineas;
+import Interactors.ObtenerYValidarLineasTelefonicasDeArchivo;
+import Interactors.ObtenerLineasTelefonicas;
 
 import spark.ModelAndView;
 import spark.Request;
@@ -32,15 +32,15 @@ public class LineaController {
 	
 	private static ThymeleafTemplateEngine engine = new ThymeleafTemplateEngine();
 	
-	ObtenerYValidarLineasTelefonicasDeArchivoUseCase obtenerLineas;
-	GuardarLineasUseCase agregarLineasUseCase;
-	GestionarConfiguracionPersistenciaUseCase configuracion;
+	ObtenerYValidarLineasTelefonicasDeArchivo obtenerLineas;
+	GuardarLineas agregarLineasUseCase;
+	GestionarConfiguracionPersistencia configuracion;
 	
 	public void main() {
 		
 		post("/:tipo/uploadLinea", "multipart/form-data", (Request request, Response response) -> {
 			
-		 	obtenerLineas=new ObtenerYValidarLineasTelefonicasDeArchivoUseCase();
+		 	obtenerLineas=new ObtenerYValidarLineasTelefonicasDeArchivo();
 		 	
 		 	String path = "lineasUpload/";
 		 	request.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
@@ -61,11 +61,11 @@ public class LineaController {
 	           return engine.render(new ModelAndView(viewObjects, "LineasDeArchivo"));
 	        });
 		post("/:tipo/saveLineas",(request,response)->{
-			agregarLineasUseCase=new GuardarLineasUseCase();
+			agregarLineasUseCase=new GuardarLineas();
 			String ruta=request.queryParams("filePath");
 			Path out = Paths.get(ruta);
 			
-			GestionarConfiguracionPersistenciaUseCase configuracion=new GestionarConfiguracionPersistenciaUseCase();
+			GestionarConfiguracionPersistencia configuracion=new GestionarConfiguracionPersistencia();
 			configuracion.seleccionarPersistencia(request.params(":tipo"));
 			
 			List<LineaDTO> lineasLeidas=obtenerLineas.ObtenerLineasDeArchivo(out);
@@ -78,10 +78,10 @@ public class LineaController {
 	           return engine.render(new ModelAndView(viewObjects, "LineasIngresadas"));
 			});
 		get("/:tipo/getLineas", (Request request, Response response) -> {
-			ObtenerLineasUseCase obtenerLineas=new ObtenerLineasUseCase();
-			Iterable<Linea> lineas=obtenerLineas.getLineas(request.params(":tipo"));
+			ObtenerLineasTelefonicas obtenerLineasTelefonicas=new ObtenerLineasTelefonicas();
+			Iterable<LineaTelefonica> lineaTelefonicas=obtenerLineasTelefonicas.getLineas(request.params(":tipo"));
 			Map<String, Object> viewObjects = new HashMap<String, Object>();
-			   viewObjects.put("lineas", lineas);
+			   viewObjects.put("lineas", lineaTelefonicas);
 	           viewObjects.put("tipo", request.params(":tipo"));
 	           return engine.render(new ModelAndView(viewObjects, "LineasIngresadas"));
 		});

@@ -2,21 +2,21 @@ package DTOs;
 
 import java.util.List;
 
-import Entities.Linea;
+import Entities.LineaTelefonica;
  
 public class LineaDTO {
-	private Linea linea;
+	private LineaTelefonica lineaTelefonica;
 	private List<String> numerosAmigos=null;
 	
-	public LineaDTO(Linea linea) {
-		this.linea=linea;
+	public LineaDTO(LineaTelefonica lineaTelefonica) {
+		this.lineaTelefonica=lineaTelefonica;
 	}
-	public LineaDTO(Linea linea,List<String>numerosAmigos) {
-		this.linea=linea;
+	public LineaDTO(LineaTelefonica lineaTelefonica,List<String>numerosAmigos) {
+		this.lineaTelefonica=lineaTelefonica;
 		this.numerosAmigos=numerosAmigos;
 	}
-	public Linea getLinea() {
-		return this.linea;
+	public LineaTelefonica getLinea() {
+		return this.lineaTelefonica;
 	}
 	public List<String> getNumerosAmigos() {
 		return this.numerosAmigos;

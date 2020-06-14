@@ -1,13 +1,13 @@
 package Entities;
 
-public class Linea {	
+public class LineaTelefonica {	
 	private String numero;
 	private String nombreUsuario;
 	private Plan plan;
 	
-	public Linea(){	}
+	public LineaTelefonica(){	}
 	
-	public Linea(String numero,String nombrePropietario,Plan plan) {
+	public LineaTelefonica(String numero,String nombrePropietario,Plan plan) {
 		this.numero=numero;
 		this.nombreUsuario=nombrePropietario;
 		this.plan=plan;

@@ -19,12 +19,12 @@ import Entities.CDR;
 
 import Entities.Tarificacion;
 
-import Interactors.AgregarTarificacionUseCase;
-import Interactors.GestionarConfiguracionPersistenciaUseCase;
-import Interactors.ObtenerYValidarCDRsDeArchivoUseCase;
-import Interactors.ObtenerCDRsSegunTarificacionUseCase;
-import Interactors.ObtenerTarificacionUseCase;
-import Interactors.TarificarYGuardarCDRsUseCase;
+import Interactors.AgregarTarificacion;
+import Interactors.GestionarConfiguracionPersistencia;
+import Interactors.ObtenerYValidarCDRsDeArchivo;
+import Interactors.ObtenerCDRsSegunTarificacion;
+import Interactors.ObtenerTarificacion;
+import Interactors.TarificarYGuardarCDRs;
 
 import spark.ModelAndView;
 import spark.Request;
@@ -38,7 +38,7 @@ public class CDRController {
 	public void main() {
 		
 		post("/:tipo/UploadCDR",(Request request,Response response) ->{
-			ObtenerYValidarCDRsDeArchivoUseCase obtenerCDR=new ObtenerYValidarCDRsDeArchivoUseCase();
+			ObtenerYValidarCDRsDeArchivo obtenerCDR=new ObtenerYValidarCDRsDeArchivo();
 			
 			String path = "CDRsUpload/";
 		 	request.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
@@ -60,12 +60,12 @@ public class CDRController {
 		});
 		
 		post("/:tipo/saveCDRs",(Request request,Response response)->{
-			ObtenerYValidarCDRsDeArchivoUseCase obtenerCDR=new ObtenerYValidarCDRsDeArchivoUseCase();
-			TarificarYGuardarCDRsUseCase tarificarYGuardar = new TarificarYGuardarCDRsUseCase();
-			GestionarConfiguracionPersistenciaUseCase configuracion=new GestionarConfiguracionPersistenciaUseCase();
+			ObtenerYValidarCDRsDeArchivo obtenerCDR=new ObtenerYValidarCDRsDeArchivo();
+			TarificarYGuardarCDRs tarificarYGuardar = new TarificarYGuardarCDRs();
+			GestionarConfiguracionPersistencia configuracion=new GestionarConfiguracionPersistencia();
 			configuracion.seleccionarPersistencia(request.params(":tipo"));
 			
-			AgregarTarificacionUseCase agregarTarificacion=new AgregarTarificacionUseCase();
+			AgregarTarificacion agregarTarificacion=new AgregarTarificacion();
 			Tarificacion tarificacion=agregarTarificacion.agregarTarificacion(request.params(":tipo"));
 
 			String ruta=request.queryParams("filePath");
@@ -87,8 +87,8 @@ public class CDRController {
 		});
 		
 		get("/:tipo/getCDRsRegistered/:id",(request, response) ->{
-			ObtenerCDRsSegunTarificacionUseCase obtenerCDRs=new ObtenerCDRsSegunTarificacionUseCase();
-			ObtenerTarificacionUseCase obtenerTarificacion=new ObtenerTarificacionUseCase();
+			ObtenerCDRsSegunTarificacion obtenerCDRs=new ObtenerCDRsSegunTarificacion();
+			ObtenerTarificacion obtenerTarificacion=new ObtenerTarificacion();
 			Tarificacion tarificacion=obtenerTarificacion.getTarificacion(Integer.parseInt(request.params(":id")),request.params(":tipo"));
 			List<CDR> cdrsTarificacion=obtenerCDRs.obtenerCDRS(tarificacion);
 			Iterable<CDR> listaCDRs=cdrsTarificacion;

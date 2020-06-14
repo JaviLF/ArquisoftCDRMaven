@@ -27,11 +27,11 @@ public class CDR {
 		this.duracionLlamada=duracionLlamada;
 	}
 	
-	public void calcularTarifaSegunLinea(Linea linea) {
+	public void calcularTarifaSegunLinea(LineaTelefonica lineaTelefonica) {
 		String[] duracion=this.duracionLlamada.split(":");
 		int minutos=Integer.parseInt(duracion[0]);
-		double segundos=Integer.parseInt(duracion[1])/60;
-		double tarifaMinuto=linea.getTarifaMinuto(this);
+		double segundos=Double.parseDouble(duracion[1])/60;
+		double tarifaMinuto=lineaTelefonica.getTarifaMinuto(this);
 		this.tarifa=(tarifaMinuto*minutos)+(tarifaMinuto*segundos);
 	}
 	
