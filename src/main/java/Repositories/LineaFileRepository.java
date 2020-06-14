@@ -10,16 +10,16 @@ import java.util.List;
 
 import DTOs.LineaDTO;
 
-import Entities.Linea;
+import Entities.LineaTelefonica;
 
 import Entities.PlanFactory;
 
-import Gateways.PersistenciaLinea;
+import Gateways.PersistenciaLineaTelefonica;
  
-public class LineaFileRepository implements PersistenciaLinea{
-	public void guardarLinea(LineaDTO DTO) {
-		Linea linea=DTO.getLinea();
-		if(!exists(linea.getNumero())) {
+public class LineaFileRepository implements PersistenciaLineaTelefonica{
+	public void guardarLineaTelefonica(LineaDTO DTO) {
+		LineaTelefonica lineaTelefonica=DTO.getLinea();
+		if(!exists(lineaTelefonica.getNumero())) {
 			try {
 				File f = new File("lineas_register.txt");
 				FileWriter fw;
@@ -44,10 +44,10 @@ public class LineaFileRepository implements PersistenciaLinea{
 		}
 	}
 	public String generarDatosLinea(LineaDTO DTO) {
-		Linea linea=DTO.getLinea();
+		LineaTelefonica lineaTelefonica=DTO.getLinea();
 		List<String> numerosAmigos=DTO.getNumerosAmigos();
-		String datosLinea=linea.getNumero()+"%"+linea.getNombreUsuario()+"%"+linea.getPlan().getNombre();
-		if(linea.getPlan().getNombre()!="wow"||numerosAmigos==null) {
+		String datosLinea=lineaTelefonica.getNumero()+"%"+lineaTelefonica.getNombreUsuario()+"%"+lineaTelefonica.getPlan().getNombre();
+		if(lineaTelefonica.getPlan().getNombre()!="wow"||numerosAmigos==null) {
 			datosLinea=datosLinea+"%"+null+"%"+null+"%"+null+"%"+null;
 		}else {
 			for(int i=0;i<4;i++) {
@@ -64,8 +64,8 @@ public class LineaFileRepository implements PersistenciaLinea{
 		return datosLinea;
 	}
 	
-	public Linea getLineaByNumero(String numero) {
-		Linea linea = new Linea();
+	public LineaTelefonica getLineaTelefonicaByNumero(String numero) {
+		LineaTelefonica lineaTelefonica = new LineaTelefonica();
 		try {
 			File f = new File("lineas_register.txt");
 			if(f.exists()) {
@@ -84,17 +84,17 @@ public class LineaFileRepository implements PersistenciaLinea{
 					if(Integer.parseInt(contacto[0])==Integer.parseInt(numero))
 						found=true;
 				}
-				linea=generarLinea(line);
+				lineaTelefonica=generarLinea(line);
 				br.close();
 			}
 			
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		return linea;
+		return lineaTelefonica;
 	}
-	public List<Linea> getLineas(){
-		List<Linea> lista=new ArrayList<Linea>();
+	public List<LineaTelefonica> getLineasTelefonicas(){
+		List<LineaTelefonica> listaLineasTelefonicas=new ArrayList<LineaTelefonica>();
 		try {
 			File f = new File("lineas_register.txt");
 			if(f.exists()) {
@@ -104,7 +104,7 @@ public class LineaFileRepository implements PersistenciaLinea{
 				line = br.readLine();//skip header
 				line = br.readLine();//getting first line
 				while(line!=null) {
-					lista.add(generarLinea(line));
+					listaLineasTelefonicas.add(generarLinea(line));
 					line = br.readLine();
 				}
 				br.close();
@@ -113,17 +113,17 @@ public class LineaFileRepository implements PersistenciaLinea{
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		return lista;
+		return listaLineasTelefonicas;
 	}
-	public Linea generarLinea(String line) {
-		Linea linea = new Linea();
-		String [] contacto=line.split("%");
-		linea.setNumero(contacto[0]);
-		linea.setNombreUsuario(contacto[1]);
+	public LineaTelefonica generarLinea(String linea) {
+		LineaTelefonica lineaTelefonica = new LineaTelefonica();
+		String [] contacto=linea.split("%");
+		lineaTelefonica.setNumero(contacto[0]);
+		lineaTelefonica.setNombreUsuario(contacto[1]);
 		PlanFactory factory=new PlanFactory();
 		
 		if(contacto.length<4) {
-			linea.setPlan(factory.generarPlanByName(contacto[2],null));
+			lineaTelefonica.setPlan(factory.generarPlanByName(contacto[2],null));
 		}else {
 			List<String> numerosAmigos=new ArrayList<String>();
 			for(int j=0;j<4;j++) {
@@ -131,9 +131,9 @@ public class LineaFileRepository implements PersistenciaLinea{
 					numerosAmigos.add(contacto[j+3]);
 				}
 			}
-			linea.setPlan(factory.generarPlanByName(contacto[2],numerosAmigos));
+			lineaTelefonica.setPlan(factory.generarPlanByName(contacto[2],numerosAmigos));
 		}
-		return linea;
+		return lineaTelefonica;
 	}
 	
 	

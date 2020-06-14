@@ -1,7 +1,7 @@
 package Interactors;
 
 import Gateways.PersistenciaCDR;
-import Gateways.PersistenciaLinea;
+import Gateways.PersistenciaLineaTelefonica;
 import Gateways.PersistenciaTarificacion;
 import Repositories.CDRFileRepository;
 import Repositories.CDRSqlRepository;
@@ -10,21 +10,21 @@ import Repositories.LineaSqlRepository;
 import Repositories.TarificacionFileRepository;
 import Repositories.TarificacionSqlRepository;
 
-public class GestionarConfiguracionPersistenciaUseCase {
+public class GestionarConfiguracionPersistencia {
 	private PersistenciaCDR persistenciaCDR=null;
-	private PersistenciaLinea persistenciaLineas=null;
+	private PersistenciaLineaTelefonica persistenciaLineaTelefonicas=null;
 	private PersistenciaTarificacion persistenciaTarificacion=null;
 	
 	public void seleccionarPersistencia(String tipo) {
 		switch(tipo) {
 		case("sql"):
 			this.persistenciaCDR= new CDRSqlRepository();
-			this.persistenciaLineas=new LineaSqlRepository();
+			this.persistenciaLineaTelefonicas=new LineaSqlRepository();
 			this.persistenciaTarificacion=new TarificacionSqlRepository();
 			break;
 		case("archivo"):
 			this.persistenciaCDR= new CDRFileRepository();
-			this.persistenciaLineas=new LineaFileRepository();
+			this.persistenciaLineaTelefonicas=new LineaFileRepository();
 			this.persistenciaTarificacion=new TarificacionFileRepository();
 			break;
 		}
@@ -33,8 +33,8 @@ public class GestionarConfiguracionPersistenciaUseCase {
 	public PersistenciaCDR getPersistenciaCDR() {
 		return this.persistenciaCDR;
 	}
-	public PersistenciaLinea getPersistenciaLinea() {
-		return this.persistenciaLineas;
+	public PersistenciaLineaTelefonica getPersistenciaLinea() {
+		return this.persistenciaLineaTelefonicas;
 	}
 	public PersistenciaTarificacion PersistenciaTarificacion() {
 		return this.persistenciaTarificacion;

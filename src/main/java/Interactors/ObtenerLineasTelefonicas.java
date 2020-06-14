@@ -2,14 +2,14 @@ package Interactors;
 
 import java.util.List;
 
-import Entities.Linea;
-import Gateways.PersistenciaLinea;
+import Entities.LineaTelefonica;
+import Gateways.PersistenciaLineaTelefonica;
 import Repositories.LineaFileRepository;
 import Repositories.LineaSqlRepository;
 
-public class ObtenerLineasUseCase {
-	public List<Linea> getLineas(String tipo_persistencia){
-		PersistenciaLinea persistencia =null;
+public class ObtenerLineasTelefonicas {
+	public List<LineaTelefonica> getLineas(String tipo_persistencia){
+		PersistenciaLineaTelefonica persistencia =null;
 		switch(tipo_persistencia) {
 		case("sql"):
 			persistencia=new LineaSqlRepository();
@@ -18,6 +18,6 @@ public class ObtenerLineasUseCase {
 			persistencia=new LineaFileRepository();
 			break;
 		}
-		return persistencia.getLineas();
+		return persistencia.getLineasTelefonicas();
 	}
 }

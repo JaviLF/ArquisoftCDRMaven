@@ -4,19 +4,19 @@ import static spark.Spark.*;
 import static spark.Spark.get;
 
 import Interactors.GenerarDatosFacturaJSON;
-import Interactors.ObtenerLineaUseCase;
+import Interactors.ObtenerLineaTelefonica;
 
 
 public class APIController {
 	
 	public void main() {
 		get("/:tipo/facturar/:numero/:mes",(request,response)->{
-			ObtenerLineaUseCase obtenerLinea=new ObtenerLineaUseCase();
+			ObtenerLineaTelefonica obtenerLineaTelefonica=new ObtenerLineaTelefonica();
 			GenerarDatosFacturaJSON resp=new GenerarDatosFacturaJSON();
-			if(obtenerLinea.getLinea(request.params(":numero"), request.params(":tipo"))==null){
+			if(obtenerLineaTelefonica.getLinea(request.params(":numero"), request.params(":tipo"))==null){
 				return "{}";
 			}else {
-				return resp.getJSON(obtenerLinea.getLinea(request.params(":numero"), request.params(":tipo")),Integer.parseInt(request.params(":mes")));
+				return resp.getJSON(obtenerLineaTelefonica.getLinea(request.params(":numero"), request.params(":tipo")), request.params(":tipo"), Integer.parseInt(request.params(":mes")));
 			}
 		});
 	}

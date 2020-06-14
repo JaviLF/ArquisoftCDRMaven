@@ -9,7 +9,7 @@ import java.util.List;
 
 import Entities.CDR;
 
-public class ObtenerYValidarCDRsDeArchivoUseCase {
+public class ObtenerYValidarCDRsDeArchivo {
 	public List<CDR> ObtenerCDRsDeArchivo(Path path){
 		List<CDR> CDRs=new ArrayList<CDR>();
 		try {
@@ -22,7 +22,7 @@ public class ObtenerYValidarCDRsDeArchivoUseCase {
 				cdr = br.readLine();//firstline
 				while(cdr != null) {
 					if(cdr.split(",").length==5) {
-						if(validarCDR(cdr)) {
+						if(esCDRValido(cdr)) {
 							CDRs.add(generarCDRDesdeDatos(cdr));
 						}
 					}
@@ -49,16 +49,16 @@ public class ObtenerYValidarCDRsDeArchivoUseCase {
 		return cdr;
 	}
 	
-	public boolean validarCDR(String cdr) {
+	public boolean esCDRValido(String cdr) {
 		String []datosCdr=cdr.split(",");
-		if(validarSiEsNumeroTelefonicoValido(datosCdr[0])&&validarSiEsNumeroTelefonicoValido(datosCdr[1])&&validarFormatoFecha(datosCdr[2])&&validarSiEsHoraValida(datosCdr[3])&&validarSiEsDuracionValida(datosCdr[4]))
+		if(esNumeroTelefonicoValido(datosCdr[0])&&esNumeroTelefonicoValido(datosCdr[1])&&esFechaValida(datosCdr[2])&&esHoraValida(datosCdr[3])&&esDuracionValida(datosCdr[4]))
 			return true;
 		return false;
 	}
-	public boolean validarVacio(String valor) {
+	public boolean esVacio(String valor) {
 		return valor.isEmpty();
 	}
-	public boolean validarSiEsNumero(String numero) {
+	public boolean esValorNumerico(String numero) {
 		boolean esNumero=false;
 		try {
 			Integer.parseInt(numero);
@@ -68,11 +68,11 @@ public class ObtenerYValidarCDRsDeArchivoUseCase {
 		}
 		return esNumero;
 	}
-	public boolean validarFormatoFecha(String Fecha) {
+	public boolean esFechaValida(String Fecha) {
 		boolean esFecha=false;
 		String[] fecha=Fecha.split("-");
 		if(fecha.length==3) {
-			if(validarSiEsNumero(fecha[0])&&validarSiEsNumero(fecha[1])&&validarSiEsNumero(fecha[2])) {
+			if(esValorNumerico(fecha[0])&&esValorNumerico(fecha[1])&&esValorNumerico(fecha[2])) {
 				if(Integer.parseInt(fecha[0])<=30&&Integer.parseInt(fecha[0])>0&&Integer.parseInt(fecha[1])<=12&&Integer.parseInt(fecha[1])>0&&Integer.parseInt(fecha[2])>1800&&Integer.parseInt(fecha[2])<2021) {
 					esFecha=true;
 				}
@@ -80,21 +80,21 @@ public class ObtenerYValidarCDRsDeArchivoUseCase {
 		}
 		return esFecha;
 	}
-	public boolean validarSiEsNumeroTelefonicoValido(String numero) {
+	public boolean esNumeroTelefonicoValido(String numero) {
 		boolean esValido=false;
-		if(validarVacio(numero)==false) {
-			if(validarSiEsNumero(numero)==true) {
+		if(esVacio(numero)==false) {
+			if(esValorNumerico(numero)==true) {
 				esValido=true;
 			}
 		}
 		return esValido;
 	}
 
-	public boolean validarSiEsHoraValida(String Hora) {
+	public boolean esHoraValida(String Hora) {
 		boolean esValido=false;
 		String[] hora=Hora.split(":");
 		if(hora.length==2) {
-			if(validarSiEsNumero(hora[0])&&validarSiEsNumero(hora[1])) {
+			if(esValorNumerico(hora[0])&&esValorNumerico(hora[1])) {
 				if(Integer.parseInt(hora[0])<=23&&Integer.parseInt(hora[0])>=0&&Integer.parseInt(hora[1])<=59&&Integer.parseInt(hora[1])>=0) {
 					esValido=true;
 				}
@@ -102,11 +102,11 @@ public class ObtenerYValidarCDRsDeArchivoUseCase {
 		}
 		return esValido;
 	}
-	public boolean validarSiEsDuracionValida(String Duracion) {
+	public boolean esDuracionValida(String Duracion) {
 		boolean esValido=false;
 		String[] duracion=Duracion.split(":");
 		if(duracion.length==2) {
-			if(validarSiEsNumero(duracion[0])&&validarSiEsNumero(duracion[1])) {
+			if(esValorNumerico(duracion[0])&&esValorNumerico(duracion[1])) {
 				if(Integer.parseInt(duracion[0])<=59&&Integer.parseInt(duracion[0])>=0&&Integer.parseInt(duracion[1])<=59&&Integer.parseInt(duracion[1])>=0) {
 					esValido=true;
 				}

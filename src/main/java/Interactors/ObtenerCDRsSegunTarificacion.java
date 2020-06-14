@@ -9,7 +9,7 @@ import Gateways.PersistenciaCDR;
 import Repositories.CDRFileRepository;
 import Repositories.CDRSqlRepository;
 
-public class ObtenerCDRsSegunTarificacionUseCase {
+public class ObtenerCDRsSegunTarificacion {
 	public List<CDR> obtenerCDRS(Tarificacion tarificacion){
 		PersistenciaCDR persistencia=null;
 		switch(tarificacion.getTipo()) {
@@ -20,8 +20,8 @@ public class ObtenerCDRsSegunTarificacionUseCase {
 			persistencia=new CDRFileRepository();
 			break;
 		}
-		List<CDR>lista=new ArrayList<CDR>();
-		lista=persistencia.getCDRSbyTarificationId(tarificacion.getId());
-		return lista;
+		List<CDR>listaCDRs=new ArrayList<CDR>();
+		listaCDRs=persistencia.getCDRSbyTarificationId(tarificacion.getId());
+		return listaCDRs;
 	}
 }

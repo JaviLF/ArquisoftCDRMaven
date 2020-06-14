@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTOs.LineaDTO;
-import Entities.Linea;
+import Entities.LineaTelefonica;
 import Entities.PlanFactory;
 
 
-public class ObtenerYValidarLineasTelefonicasDeArchivoUseCase {
+public class ObtenerYValidarLineasTelefonicasDeArchivo {
 	
 	public List<LineaDTO> ObtenerLineasDeArchivo(Path path){
-		List<LineaDTO> lineas=new ArrayList<LineaDTO>();
+		List<LineaDTO> lineasTelefonicas=new ArrayList<LineaDTO>();
 		try {
 			File f = path.toFile();
 			if(f.exists()) {
@@ -26,7 +26,7 @@ public class ObtenerYValidarLineasTelefonicasDeArchivoUseCase {
 				linea = br.readLine();//firstline
 				while(linea != null) {
 					if(generarLineaDTOSegunDatos(linea)!=null)
-						lineas.add(generarLineaDTOSegunDatos(linea));
+						lineasTelefonicas.add(generarLineaDTOSegunDatos(linea));
 					linea = br.readLine();
 				}
 				br.close();
@@ -35,7 +35,7 @@ public class ObtenerYValidarLineasTelefonicasDeArchivoUseCase {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		return lineas;
+		return lineasTelefonicas;
 	}
 	
 	public LineaDTO generarLineaDTOSegunDatos(String datos) {
@@ -45,10 +45,10 @@ public class ObtenerYValidarLineasTelefonicasDeArchivoUseCase {
 		datos=datos.replace("]", "");
 		
 		String [] contacto=datos.split(",");
-		if(contacto.length>2) {
-			if((validarSiEsNumeroTelefonicoValido(contacto[0])==true)&&(validarSiEsNombreValido(contacto[1])==true)&&(validarSiEsPlanValido(contacto[2])==true)) {
+		
+			if(sonDatosValidos(contacto)) {
 				PlanFactory factory=new PlanFactory();
-				Linea lineaTelef = new Linea();
+				LineaTelefonica lineaTelef = new LineaTelefonica();
 		
 			
 				lineaTelef.setNumero(contacto[0]);
@@ -58,7 +58,7 @@ public class ObtenerYValidarLineasTelefonicasDeArchivoUseCase {
 					List<String>numerosAmigos= new ArrayList<String>();
 					int pos=3;
 						while(pos<contacto.length) {
-							if(validarSiEsNumeroTelefonicoValido(contacto[pos])==true) {
+							if(esNumeroTelefonicoValido(contacto[pos])==true) {
 								numerosAmigos.add(contacto[pos]);
 							}
 						pos=pos+1;
@@ -70,15 +70,19 @@ public class ObtenerYValidarLineasTelefonicasDeArchivoUseCase {
 					lineaTelef.setPlan(factory.generarPlanByName(contacto[2].toLowerCase(),null));
 					dto=new LineaDTO(lineaTelef,null);
 				}
-			}
+			
 		}
 		return dto;
 	}
+
+	private boolean sonDatosValidos(String[] contacto) {
+		return ((contacto.length > 2) && (esNumeroTelefonicoValido(contacto[0])==true)&&(esNombreValido(contacto[1])==true)&&(esPlanValido(contacto[2])==true));
+	}
 	
-	public boolean validarVacio(String valor) {
+	public boolean esVacio(String valor) {
 		return valor.isEmpty();
 	}
-	public boolean validarSiEsNumero(String numero) {
+	public boolean esValorNumerico(String numero) {
 		boolean esNumero=false;
 		try {
 			Integer.parseInt(numero);
@@ -88,25 +92,25 @@ public class ObtenerYValidarLineasTelefonicasDeArchivoUseCase {
 		}
 		return esNumero;
 	}
-	public boolean validarSiEsNumeroTelefonicoValido(String numero) {
+	public boolean esNumeroTelefonicoValido(String numero) {
 		boolean esValido=false;
-		if(validarVacio(numero)==false) {
-			if(validarSiEsNumero(numero)==true) {
+		if(esVacio(numero)==false) {
+			if(esValorNumerico(numero)==true) {
 				esValido=true;
 			}
 		}
 		return esValido;
 	}
-	public boolean validarSiEsNombreValido(String nombre) {
+	public boolean esNombreValido(String nombre) {
 		boolean esValido=false;
-		if(validarVacio(nombre)==false) {
-			if(validarSiEsNumero(nombre)==false) {
+		if(esVacio(nombre)==false) {
+			if(esValorNumerico(nombre)==false) {
 				esValido=true;
 			}
 		}
 		return esValido;
 	}
-	public boolean validarSiEsPlanValido(String plan) {
+	public boolean esPlanValido(String plan) {
 		boolean esValido=false;
 		if((plan.toLowerCase().equals("prepago"))||(plan.toLowerCase().equals("postpago"))||(plan.toLowerCase().equals("wow"))) {
 				esValido=true;

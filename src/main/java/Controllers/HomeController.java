@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import Entities.Tarificacion;
-import Interactors.GestionarConfiguracionPersistenciaUseCase;
-import Interactors.ObtenerTarificacionesUseCase;
+import Interactors.GestionarConfiguracionPersistencia;
+import Interactors.ObtenerTarificaciones;
 
 import spark.ModelAndView;
 
@@ -23,7 +23,7 @@ public class HomeController {
 		redirect.get("/","/archivo");
 		
 	    get("/:tipo", (request, response) -> {
-	    	GestionarConfiguracionPersistenciaUseCase configuracion=new GestionarConfiguracionPersistenciaUseCase();
+	    	GestionarConfiguracionPersistencia configuracion=new GestionarConfiguracionPersistencia();
 	    	configuracion.seleccionarPersistencia(":tipo");
 	    	
 		    Map<String, Object> viewObjects = new HashMap<String, Object>();
@@ -38,7 +38,7 @@ public class HomeController {
 	        return engine.render(new ModelAndView(viewObjects, "UploadCDRs"));
 		});
 		get("/:tipo/GetTarifications", (request, response)->{
-			ObtenerTarificacionesUseCase tarificaciones=new ObtenerTarificacionesUseCase();
+			ObtenerTarificaciones tarificaciones=new ObtenerTarificaciones();
 			List<Tarificacion> lista=tarificaciones.obtenerTarificaciones(request.params(":tipo"));
 			Iterable<Tarificacion> Lista=lista;
 			Map<String, Object> viewObjects = new HashMap<String, Object>();
