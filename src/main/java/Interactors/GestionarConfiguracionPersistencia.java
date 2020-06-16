@@ -9,7 +9,7 @@ import Repositories.LineaFileRepository;
 import Repositories.LineaSqlRepository;
 import Repositories.TarificacionFileRepository;
 import Repositories.TarificacionSqlRepository;
-
+ 
 public class GestionarConfiguracionPersistencia {
 	private PersistenciaCDR persistenciaCDR=null;
 	private PersistenciaLineaTelefonica persistenciaLineaTelefonicas=null;

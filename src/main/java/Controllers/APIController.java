@@ -24,5 +24,5 @@ public class APIController {
 				return resp.getJSON(obtenerLineaTelefonica.getLinea(request.params(":numero"), configuracion.getPersistenciaLinea()), configuracion.getPersistenciaCDR(), Integer.parseInt(request.params(":mes")));
 			}
 		});
-	}
+	} 
 }
