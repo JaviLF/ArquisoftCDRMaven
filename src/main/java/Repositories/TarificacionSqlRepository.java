@@ -79,12 +79,9 @@ public class TarificacionSqlRepository implements PersistenciaTarificacion{
 		      
 		      while ( rs.next() ) {
 		    	  tarificacion=new Tarificacion();
-		    	  int CDRid = rs.getInt("id");
-		    	  String fecha = rs.getString("FECHA");
-		    	  String tipo  = rs.getString("TIPO");
-			      tarificacion.setFecha(fecha.replace('a', '-'));
-			      tarificacion.setTipo(tipo);
-			      tarificacion.setId(CDRid);
+			      tarificacion.setFecha(rs.getString("FECHA").replace('a', '-'));
+			      tarificacion.setTipo( rs.getString("TIPO"));
+			      tarificacion.setId(rs.getInt("id"));
 			      lista.add(tarificacion);
 		      }
 		      rs.close();
@@ -112,12 +109,9 @@ public class TarificacionSqlRepository implements PersistenciaTarificacion{
 		      
 		      while ( rs.next() ) {
 		    	  tarificacion=new Tarificacion();
-		    	  int CDRid = rs.getInt("id");
-		    	  String fecha = rs.getString("FECHA");
-		    	  String tipo  = rs.getString("TIPO");
-			      tarificacion.setFecha(fecha.replace('a', '-'));
-			      tarificacion.setTipo(tipo);
-			      tarificacion.setId(CDRid);
+			      tarificacion.setFecha(rs.getString("FECHA").replace('a', '-'));
+			      tarificacion.setTipo(rs.getString("TIPO"));
+			      tarificacion.setId(rs.getInt("id"));
 			      
 		      }
 		      rs.close();

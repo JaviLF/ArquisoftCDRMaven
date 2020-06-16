@@ -1,9 +1,5 @@
 import Presenters.UiPresenter;
 import ViewModels.SparkUIViewModel;
-import static spark.Spark.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Main {

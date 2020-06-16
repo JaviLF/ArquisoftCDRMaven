@@ -4,14 +4,14 @@ import java.util.List;
 
 import Entities.LineaTelefonica;
  
-public class LineaDTO {
+public class InputLineaTelefonicaDTO {
 	private LineaTelefonica lineaTelefonica;
 	private List<String> numerosAmigos=null;
 	
-	public LineaDTO(LineaTelefonica lineaTelefonica) {
+	public InputLineaTelefonicaDTO(LineaTelefonica lineaTelefonica) {
 		this.lineaTelefonica=lineaTelefonica;
 	}
-	public LineaDTO(LineaTelefonica lineaTelefonica,List<String>numerosAmigos) {
+	public InputLineaTelefonicaDTO(LineaTelefonica lineaTelefonica,List<String>numerosAmigos) {
 		this.lineaTelefonica=lineaTelefonica;
 		this.numerosAmigos=numerosAmigos;
 	}

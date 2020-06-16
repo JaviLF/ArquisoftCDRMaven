@@ -36,7 +36,7 @@ public class GestionarConfiguracionPersistencia {
 	public PersistenciaLineaTelefonica getPersistenciaLinea() {
 		return this.persistenciaLineaTelefonicas;
 	}
-	public PersistenciaTarificacion PersistenciaTarificacion() {
+	public PersistenciaTarificacion getPersistenciaTarificacion() {
 		return this.persistenciaTarificacion;
 	}
 }

@@ -1,0 +1,4 @@
+Numero,Nombre,Plan,Extra
+77422828,Javier Loayza,Prepago
+70356262,Andriw Teran,Postpago
+70981265,Diana Rodriguez,Wow,[77422828]

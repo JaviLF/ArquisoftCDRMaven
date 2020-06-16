@@ -2,11 +2,11 @@ package Gateways;
 
 import java.util.List;
 
-import DTOs.LineaDTO;
+import DTOs.InputLineaTelefonicaDTO;
 import Entities.LineaTelefonica;
 
 public interface PersistenciaLineaTelefonica {
-	public void guardarLineaTelefonica(LineaDTO DTO);
+	public void guardarLineaTelefonica(InputLineaTelefonicaDTO DTO);
 	public LineaTelefonica getLineaTelefonicaByNumero(String numero);
 	public List<LineaTelefonica>getLineasTelefonicas();
 	

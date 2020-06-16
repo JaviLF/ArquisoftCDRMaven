@@ -7,15 +7,15 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import DTOs.LineaDTO;
+import DTOs.InputLineaTelefonicaDTO;
 import Entities.LineaTelefonica;
 import Entities.PlanFactory;
 
 
 public class ObtenerYValidarLineasTelefonicasDeArchivo {
 	
-	public List<LineaDTO> ObtenerLineasDeArchivo(Path path){
-		List<LineaDTO> lineasTelefonicas=new ArrayList<LineaDTO>();
+	public List<InputLineaTelefonicaDTO> ObtenerLineasDeArchivo(Path path){
+		List<InputLineaTelefonicaDTO> lineasTelefonicas=new ArrayList<InputLineaTelefonicaDTO>();
 		try {
 			File f = path.toFile();
 			if(f.exists()) {
@@ -38,8 +38,8 @@ public class ObtenerYValidarLineasTelefonicasDeArchivo {
 		return lineasTelefonicas;
 	}
 	
-	public LineaDTO generarLineaDTOSegunDatos(String datos) {
-		LineaDTO dto=null;
+	public InputLineaTelefonicaDTO generarLineaDTOSegunDatos(String datos) {
+		InputLineaTelefonicaDTO dto=null;
 		
 		datos=datos.replace("[", "");
 		datos=datos.replace("]", "");
@@ -64,11 +64,11 @@ public class ObtenerYValidarLineasTelefonicasDeArchivo {
 						pos=pos+1;
 					}
 					lineaTelef.setPlan(factory.generarPlanByName(contacto[2].toLowerCase(),numerosAmigos));
-					dto=new LineaDTO(lineaTelef,numerosAmigos);
+					dto=new InputLineaTelefonicaDTO(lineaTelef,numerosAmigos);
 					
 				}else {
 					lineaTelef.setPlan(factory.generarPlanByName(contacto[2].toLowerCase(),null));
-					dto=new LineaDTO(lineaTelef,null);
+					dto=new InputLineaTelefonicaDTO(lineaTelef,null);
 				}
 			
 		}

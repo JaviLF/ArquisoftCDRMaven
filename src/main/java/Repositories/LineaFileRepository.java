@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import DTOs.LineaDTO;
+import DTOs.InputLineaTelefonicaDTO;
 
 import Entities.LineaTelefonica;
 
@@ -17,7 +17,7 @@ import Entities.PlanFactory;
 import Gateways.PersistenciaLineaTelefonica;
  
 public class LineaFileRepository implements PersistenciaLineaTelefonica{
-	public void guardarLineaTelefonica(LineaDTO DTO) {
+	public void guardarLineaTelefonica(InputLineaTelefonicaDTO DTO) {
 		LineaTelefonica lineaTelefonica=DTO.getLinea();
 		if(!exists(lineaTelefonica.getNumero())) {
 			try {
@@ -43,7 +43,7 @@ public class LineaFileRepository implements PersistenciaLineaTelefonica{
 			}
 		}
 	}
-	public String generarDatosLinea(LineaDTO DTO) {
+	public String generarDatosLinea(InputLineaTelefonicaDTO DTO) {
 		LineaTelefonica lineaTelefonica=DTO.getLinea();
 		List<String> numerosAmigos=DTO.getNumerosAmigos();
 		String datosLinea=lineaTelefonica.getNumero()+"%"+lineaTelefonica.getNombreUsuario()+"%"+lineaTelefonica.getPlan().getNombre();
