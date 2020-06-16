@@ -1,5 +1,4 @@
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +56,6 @@ class CDRTest {
 		Plan wow= new PlanWow(new TarifaFija(),numerosAmigos);
 		LineaTelefonica linea1=new LineaTelefonica("5555","Javi",prepago);
 		
-			//linea1.getPlan().setTarifa(new TarifaPorHoras());
 		cdr3.calcularTarifaSegunLinea(linea1);
 		cdr2.calcularTarifaSegunLinea(linea1);
 		cdr1.calcularTarifaSegunLinea(linea1);
@@ -65,12 +63,11 @@ class CDRTest {
 		assertEquals(0.70,cdr2.getTarifa(), 0.001);
 		assertEquals(0.95,cdr1.getTarifa(), 0.001);
 		linea1.setPlan(postpago);
-			//linea1.getPlan().setTarifa(new TarifaFija());
+	
 		cdr3.calcularTarifaSegunLinea(linea1);
 		assertEquals(0.99,cdr3.getTarifa(), 0.001);
 		linea1.setPlan(wow);
-			//linea1.getPlan().setTarifa(new TarifaFija());
-		//linea1.addNumeroAmigo("2222");
+
 		cdr3.calcularTarifaSegunLinea(linea1);
 		cdr1.calcularTarifaSegunLinea(linea1);
 		assertEquals(0.0,cdr3.getTarifa(), 0.001);

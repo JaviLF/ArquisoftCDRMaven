@@ -33,6 +33,7 @@ public class CDR {
 		double segundos=Double.parseDouble(duracion[1])/60;
 		double tarifaMinuto=lineaTelefonica.getTarifaMinuto(this);
 		this.tarifa=(tarifaMinuto*minutos)+(tarifaMinuto*segundos);
+		
 	}
 	
 	public void guardarCDR(PersistenciaCDR repository,int id_tarificacion) {

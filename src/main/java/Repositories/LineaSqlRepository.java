@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import DTOs.LineaDTO;
+import DTOs.InputLineaTelefonicaDTO;
 
 import Entities.LineaTelefonica;
 
@@ -44,7 +44,7 @@ public class LineaSqlRepository implements PersistenciaLineaTelefonica{
 	      }
 	      System.out.println("Table created successfully");
 	}
-	public void guardarLineaTelefonica(LineaDTO DTO) {
+	public void guardarLineaTelefonica(InputLineaTelefonicaDTO DTO) {
 		LineaTelefonica lineaTelefonica=DTO.getLinea();
 		this.createTable();
 		if(exists(lineaTelefonica.getNumero())==false) {
@@ -70,7 +70,7 @@ public class LineaSqlRepository implements PersistenciaLineaTelefonica{
 		    }
 		}
 	}
-	public String generateValues(LineaDTO DTO) {
+	public String generateValues(InputLineaTelefonicaDTO DTO) {
 		LineaTelefonica lineaTelefonica=DTO.getLinea();
 		List<String> numerosAmigos=DTO.getNumerosAmigos();
 		String values;
@@ -120,24 +120,7 @@ public class LineaSqlRepository implements PersistenciaLineaTelefonica{
 		    	  String  telf_amigo3 = rs.getString("NUMERO_AMIGO_3");
 		    	  String  telf_amigo4 = rs.getString("NUMERO_AMIGO_4");
 		    	  
-		    	  lineaTelefonica.setNombreUsuario(usuario);
-			      lineaTelefonica.setNumero(numeroLinea);
-			      PlanFactory factory=new PlanFactory();
-			      if(telf_amigo1==null) {
-			    	  lineaTelefonica.setPlan(factory.generarPlanByName(plan,null));
-			      }else{
-			    	  
-			    	  numerosAmigos.add(telf_amigo1);
-			    	 
-			    	  numerosAmigos.add(telf_amigo2);
-			    	 
-			    	  numerosAmigos.add(telf_amigo3);
-			    	  
-			    	  numerosAmigos.add(telf_amigo4);
-			    	  
-			    	  lineaTelefonica.setPlan(factory.generarPlanByName(plan,numerosAmigos));
-			      }
-				  
+		    	  lineaTelefonica = obtenerlineaTelefonica(numerosAmigos, numeroLinea, usuario, plan, telf_amigo1, telf_amigo2,telf_amigo3, telf_amigo4);
 		      }
 		      rs.close();
 		      stmt.close();
@@ -148,6 +131,26 @@ public class LineaSqlRepository implements PersistenciaLineaTelefonica{
 		   }
 	    return lineaTelefonica;
 	}
+	
+	private LineaTelefonica obtenerlineaTelefonica(List<String> numerosAmigos, String numeroLinea, String usuario, String plan,
+			String telf_amigo1, String telf_amigo2, String telf_amigo3, String telf_amigo4) {
+		LineaTelefonica lineaTelefonica;
+		lineaTelefonica=new LineaTelefonica();
+		  lineaTelefonica.setNombreUsuario(usuario);
+		  lineaTelefonica.setNumero(numeroLinea);
+		  PlanFactory factory=new PlanFactory();
+		  if(telf_amigo1==null) {
+			  lineaTelefonica.setPlan(factory.generarPlanByName(plan,null));
+		  }else{
+			  numerosAmigos.add(telf_amigo1);
+			  numerosAmigos.add(telf_amigo2);
+			  numerosAmigos.add(telf_amigo3);
+			  numerosAmigos.add(telf_amigo4);
+			  lineaTelefonica.setPlan(factory.generarPlanByName(plan,numerosAmigos));
+		  }
+		return lineaTelefonica;
+	}
+	
 	public List<LineaTelefonica> getLineasTelefonicas(){
 		List<LineaTelefonica> listaLineasTelefonicas= new ArrayList<LineaTelefonica>();
 		Connection c = null;
@@ -165,29 +168,8 @@ public class LineaSqlRepository implements PersistenciaLineaTelefonica{
 		      
 		      while ( rs.next() ) {
 		    	  lineaTelefonica=new LineaTelefonica();
-		    	  List<String> numerosAmigos=new ArrayList<String>();
-		    	  
 		    	  String numeroLinea = rs.getString("TELEFONO");
-		    	  String  usuario = rs.getString("PROPIETARIO");
-		    	  String  plan  = rs.getString("PLAN");
-		    	  String  telf_amigo1 = rs.getString("NUMERO_AMIGO_1");
-		    	  String  telf_amigo2 = rs.getString("NUMERO_AMIGO_2");
-		    	  String  telf_amigo3 = rs.getString("NUMERO_AMIGO_3");
-		    	  String  telf_amigo4 = rs.getString("NUMERO_AMIGO_4");
-		    	  
-		    	  lineaTelefonica.setNombreUsuario(usuario);
-			      lineaTelefonica.setNumero(numeroLinea);
-			      PlanFactory factory=new PlanFactory();
-			      if(telf_amigo1==null) {
-			    	  lineaTelefonica.setPlan(factory.generarPlanByName(plan,null));
-			      }else{
-			    	  numerosAmigos.add(telf_amigo1);
-			    	  numerosAmigos.add(telf_amigo2);
-			    	  numerosAmigos.add(telf_amigo3);
-			    	  numerosAmigos.add(telf_amigo4);
-			    	  
-			    	  lineaTelefonica.setPlan(factory.generarPlanByName(plan,numerosAmigos));
-			      }
+		    	  lineaTelefonica=getLineaTelefonicaByNumero(numeroLinea);
 				  listaLineasTelefonicas.add(lineaTelefonica);
 		      }
 		      rs.close();

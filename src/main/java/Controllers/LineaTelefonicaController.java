@@ -1,5 +1,5 @@
 package Controllers;
-
+ 
 import static spark.Spark.*;
 
 import java.io.FileOutputStream;
@@ -14,13 +14,11 @@ import java.util.Map;
 import javax.servlet.MultipartConfigElement;
 
 
-import DTOs.LineaDTO;
-import Entities.LineaTelefonica;
+import DTOs.InputLineaTelefonicaDTO;
 
 import Interactors.GestionarConfiguracionPersistencia;
-import Interactors.GuardarLineas;
+import Interactors.GuardarLineasTelefonicas;
 import Interactors.ObtenerYValidarLineasTelefonicasDeArchivo;
-import Interactors.ObtenerLineasTelefonicas;
 
 import spark.ModelAndView;
 import spark.Request;
@@ -28,19 +26,14 @@ import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import spark.utils.IOUtils;
 
-public class LineaController {
-	
+public class LineaTelefonicaController {
+	 
 	private static ThymeleafTemplateEngine engine = new ThymeleafTemplateEngine();
-	
-	ObtenerYValidarLineasTelefonicasDeArchivo obtenerLineas;
-	GuardarLineas agregarLineasUseCase;
-	GestionarConfiguracionPersistencia configuracion;
 	
 	public void main() {
 		
 		post("/:tipo/uploadLinea", "multipart/form-data", (Request request, Response response) -> {
-			
-		 	obtenerLineas=new ObtenerYValidarLineasTelefonicasDeArchivo();
+			ObtenerYValidarLineasTelefonicasDeArchivo obtenerLineas=new ObtenerYValidarLineasTelefonicasDeArchivo();
 		 	
 		 	String path = "lineasUpload/";
 		 	request.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
@@ -50,26 +43,28 @@ public class LineaController {
             IOUtils.copy(input, outputStream);
             outputStream.close();
 		 	
-			Path out = Paths.get(fileName);
+			Path filePath = Paths.get(fileName);
 			
-			List<LineaDTO> lineas=obtenerLineas.ObtenerLineasDeArchivo(out);
+			List<InputLineaTelefonicaDTO> lineas=obtenerLineas.ObtenerLineasDeArchivo(filePath);
 			
 			Map<String, Object> viewObjects = new HashMap<String, Object>();
 	           viewObjects.put("lineasIngresadas", lineas);
 	           viewObjects.put("tipo", request.params(":tipo"));
-	           viewObjects.put("filePath", out.toString());
+	           viewObjects.put("filePath", filePath.toString());
 	           return engine.render(new ModelAndView(viewObjects, "LineasDeArchivo"));
 	        });
 		post("/:tipo/saveLineas",(request,response)->{
-			agregarLineasUseCase=new GuardarLineas();
-			String ruta=request.queryParams("filePath");
-			Path out = Paths.get(ruta);
-			
+			ObtenerYValidarLineasTelefonicasDeArchivo obtenerLineas=new ObtenerYValidarLineasTelefonicasDeArchivo();
+			GuardarLineasTelefonicas agregarLineasUseCase=new GuardarLineasTelefonicas();
 			GestionarConfiguracionPersistencia configuracion=new GestionarConfiguracionPersistencia();
+			
+			String ruta=request.queryParams("filePath");
+			Path filePath = Paths.get(ruta);
+			
 			configuracion.seleccionarPersistencia(request.params(":tipo"));
 			
-			List<LineaDTO> lineasLeidas=obtenerLineas.ObtenerLineasDeArchivo(out);
-			List<LineaDTO> lineasIngresadas=agregarLineasUseCase.guardarLineasDesdeArchivo(lineasLeidas, configuracion.getPersistenciaLinea());
+			List<InputLineaTelefonicaDTO> lineasLeidas=obtenerLineas.ObtenerLineasDeArchivo(filePath);
+			List<InputLineaTelefonicaDTO> lineasIngresadas=agregarLineasUseCase.guardarLineasDesdeArchivo(lineasLeidas, configuracion.getPersistenciaLinea());
 			
 			Map<String, Object> viewObjects = new HashMap<String, Object>();
 			viewObjects.put("lineasIngresadas", lineasIngresadas);
@@ -77,14 +72,6 @@ public class LineaController {
 	           viewObjects.put("tipo", request.params(":tipo"));
 	           return engine.render(new ModelAndView(viewObjects, "LineasIngresadas"));
 			});
-		get("/:tipo/getLineas", (Request request, Response response) -> {
-			ObtenerLineasTelefonicas obtenerLineasTelefonicas=new ObtenerLineasTelefonicas();
-			Iterable<LineaTelefonica> lineaTelefonicas=obtenerLineasTelefonicas.getLineas(request.params(":tipo"));
-			Map<String, Object> viewObjects = new HashMap<String, Object>();
-			   viewObjects.put("lineas", lineaTelefonicas);
-	           viewObjects.put("tipo", request.params(":tipo"));
-	           return engine.render(new ModelAndView(viewObjects, "LineasIngresadas"));
-		});
 		
 	}
 }

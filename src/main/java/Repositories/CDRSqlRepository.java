@@ -1,7 +1,4 @@
 package Repositories;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -85,22 +82,13 @@ public class CDRSqlRepository implements PersistenciaCDR{
 		      
 		      while ( rs.next() ) {
 		    	  cdr=new CDR();
-		    	  int CDRid = rs.getInt("id");
-		    	  String  telf_origen = rs.getString("TELF_ORIGEN");
-		    	  String  telf_destino = rs.getString("TELF_DESTINO");
-		    	  String fecha = rs.getString("FECHALLAMADA");
-		    	  String hora  = rs.getString("HORALLAMADA");
-		    	  
-		    	  String  duracion = rs.getString("DURACIONLLAMADA");
-		    	  
-			      double tarifa = rs.getDouble("TARIFA");
-			      cdr.setTelfOrigen(telf_origen);
-			      cdr.setTelfDestino(telf_destino);
-			      cdr.setFecha(fecha.replace('a', '-'));
-			      cdr.setHoraLlamada(hora.replace('a', ':'));
-			      cdr.setDuracionLlamada(duracion.replace('a', ':'));
-			      cdr.setId(CDRid);
-			      cdr.setTarifa(tarifa);
+			      cdr.setTelfOrigen(rs.getString("TELF_ORIGEN"));
+			      cdr.setTelfDestino(rs.getString("TELF_DESTINO"));
+			      cdr.setFecha(rs.getString("FECHALLAMADA").replace('a', '-'));
+			      cdr.setHoraLlamada(rs.getString("HORALLAMADA").replace('a', ':'));
+			      cdr.setDuracionLlamada(rs.getString("DURACIONLLAMADA").replace('a', ':'));
+			      cdr.setId(rs.getInt("id"));
+			      cdr.setTarifa(rs.getDouble("TARIFA"));
 		      }
 		      rs.close();
 		      stmt.close();
@@ -152,22 +140,15 @@ public class CDRSqlRepository implements PersistenciaCDR{
 		      
 		      while ( rs.next() ) {
 		    	  cdr=new CDR();
-		    	  int CDRid = rs.getInt("ID");
-		    	  String  telf_origen = rs.getString("TELF_ORIGEN");
-		    	  String  telf_destino = rs.getString("TELF_DESTINO");
-		    	  String fecha = rs.getString("FECHALLAMADA");
-		    	  String hora  = rs.getString("HORALLAMADA");
-		    	  String  duracion = rs.getString("DURACIONLLAMADA");
-			      double tarifa = rs.getDouble("TARIFA");
-			      cdr.setTelfOrigen(telf_origen);
-			      cdr.setTelfDestino(telf_destino);
-			      cdr.setFecha(fecha.replace('a', '-'));
-			      cdr.setFecha(fecha.replace('a', '-'));
-			      cdr.setHoraLlamada(hora.replace('a', ':'));
-			      cdr.setDuracionLlamada(duracion.replace('a', ':'));
-			      cdr.setId(CDRid);
-			      cdr.setTarifa(tarifa);
+			      cdr.setTelfOrigen(rs.getString("TELF_ORIGEN"));
+			      cdr.setTelfDestino(rs.getString("TELF_DESTINO"));
+			      cdr.setFecha(rs.getString("FECHALLAMADA").replace('a', '-'));
+			      cdr.setHoraLlamada(rs.getString("HORALLAMADA").replace('a', ':'));
+			      cdr.setDuracionLlamada(rs.getString("DURACIONLLAMADA").replace('a', ':'));
+			      cdr.setId(rs.getInt("ID"));
+			      cdr.setTarifa(rs.getDouble("TARIFA"));
 			      listaCDRs.add(cdr);
+			      
 		      }
 		      rs.close();
 		      stmt.close();
@@ -178,6 +159,7 @@ public class CDRSqlRepository implements PersistenciaCDR{
 		   }
 	    return listaCDRs;
 	}
+	
 	public List<CDR> getCDRSbyTelfOrigen(String telfOrigen) {
 		this.createTable();
 		List<CDR> listaCDRs=new ArrayList<CDR>();
@@ -195,21 +177,13 @@ public class CDRSqlRepository implements PersistenciaCDR{
 		      
 		      while ( rs.next() ) {
 		    	  cdr=new CDR();
-		    	  int CDRid = rs.getInt("ID");
-		    	  String  telf_origen = rs.getString("TELF_ORIGEN");
-		    	  String  telf_destino = rs.getString("TELF_DESTINO");
-		    	  String fecha = rs.getString("FECHALLAMADA");
-		    	  String hora  = rs.getString("HORALLAMADA");
-		    	  String  duracion = rs.getString("DURACIONLLAMADA");
-			      double tarifa = rs.getDouble("TARIFA");
-			      cdr.setTelfOrigen(telf_origen);
-			      cdr.setTelfDestino(telf_destino);
-			      cdr.setFecha(fecha.replace('a', '-'));
-			      cdr.setFecha(fecha.replace('a', '-'));
-			      cdr.setHoraLlamada(hora.replace('a', ':'));
-			      cdr.setDuracionLlamada(duracion.replace('a', ':'));
-			      cdr.setId(CDRid);
-			      cdr.setTarifa(tarifa);
+			      cdr.setTelfOrigen(rs.getString("TELF_ORIGEN"));
+			      cdr.setTelfDestino(rs.getString("TELF_DESTINO"));
+			      cdr.setFecha(rs.getString("FECHALLAMADA").replace('a', '-'));
+			      cdr.setHoraLlamada(rs.getString("HORALLAMADA").replace('a', ':'));
+			      cdr.setDuracionLlamada(rs.getString("DURACIONLLAMADA").replace('a', ':'));
+			      cdr.setId(rs.getInt("ID"));
+			      cdr.setTarifa(rs.getDouble("TARIFA"));
 			      listaCDRs.add(cdr);
 		      }
 		      rs.close();

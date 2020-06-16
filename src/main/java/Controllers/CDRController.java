@@ -1,5 +1,5 @@
 package Controllers;
-
+ 
 import static spark.Spark.post;
 import static spark.Spark.get;
 
@@ -21,10 +21,11 @@ import Entities.Tarificacion;
 
 import Interactors.AgregarTarificacion;
 import Interactors.GestionarConfiguracionPersistencia;
+import Interactors.GuardarCDRs;
 import Interactors.ObtenerYValidarCDRsDeArchivo;
+import Interactors.TarificarCDRs;
 import Interactors.ObtenerCDRsSegunTarificacion;
 import Interactors.ObtenerTarificacion;
-import Interactors.TarificarYGuardarCDRs;
 
 import spark.ModelAndView;
 import spark.Request;
@@ -33,10 +34,16 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import spark.utils.IOUtils;
 
 public class CDRController {
+	 
 	private static ThymeleafTemplateEngine engine = new ThymeleafTemplateEngine();
-
+ 
 	public void main() {
-		
+		get("/:tipo/GetCDRFile", (request, response)->{
+			Map<String, Object> viewObjects = new HashMap<String, Object>();
+	        viewObjects.put("title", "Welcome to Spark Project");
+	        viewObjects.put("tipo", request.params(":tipo"));
+	        return engine.render(new ModelAndView(viewObjects, "UploadCDRs"));
+		});
 		post("/:tipo/UploadCDR",(Request request,Response response) ->{
 			ObtenerYValidarCDRsDeArchivo obtenerCDR=new ObtenerYValidarCDRsDeArchivo();
 			
@@ -48,40 +55,42 @@ public class CDRController {
             IOUtils.copy(input, outputStream);
             outputStream.close();
 		 	
-			Path out = Paths.get(fileName);
+			Path filePath = Paths.get(fileName);
 			
-			List<CDR> CDRs=obtenerCDR.ObtenerCDRsDeArchivo(out);
+			List<CDR> CDRs=obtenerCDR.ObtenerCDRsDeArchivo(filePath);
 			
 			Map<String, Object> viewObjects = new HashMap<String, Object>();
-			viewObjects.put("filePath", out.toString());
+			viewObjects.put("filePath", filePath.toString());
 	        viewObjects.put("CDRSIngresados", CDRs);
 	        viewObjects.put("tipo", request.params(":tipo"));
 	        return engine.render(new ModelAndView(viewObjects, "CDRsDeArchivo"));
 		});
-		
+	 
 		post("/:tipo/saveCDRs",(Request request,Response response)->{
 			ObtenerYValidarCDRsDeArchivo obtenerCDR=new ObtenerYValidarCDRsDeArchivo();
-			TarificarYGuardarCDRs tarificarYGuardar = new TarificarYGuardarCDRs();
+			TarificarCDRs tarificarCDRs=new TarificarCDRs();
+			GuardarCDRs guardarCDRs=new GuardarCDRs();
 			GestionarConfiguracionPersistencia configuracion=new GestionarConfiguracionPersistencia();
-			configuracion.seleccionarPersistencia(request.params(":tipo"));
-			
 			AgregarTarificacion agregarTarificacion=new AgregarTarificacion();
+			
+			configuracion.seleccionarPersistencia(request.params(":tipo"));
 			Tarificacion tarificacion=agregarTarificacion.agregarTarificacion(request.params(":tipo"));
 
 			String ruta=request.queryParams("filePath");
-			Path out = Paths.get(ruta);
+			Path filePath = Paths.get(ruta);
 			
-			List<CDR> cdrsDeArchivo=obtenerCDR.ObtenerCDRsDeArchivo(out);
-			List<CDR> CDRsRegistrados=tarificarYGuardar.agregarCDR(cdrsDeArchivo, configuracion.getPersistenciaCDR(), configuracion.getPersistenciaLinea(), tarificacion.getId());
+			List<CDR> cdrsDeArchivo=obtenerCDR.ObtenerCDRsDeArchivo(filePath);
+			List<CDR> CDRsTarificados=tarificarCDRs.tarificarCDRs(cdrsDeArchivo, configuracion.getPersistenciaLinea());
+			guardarCDRs.guardarCDRs(CDRsTarificados, configuracion.getPersistenciaCDR(), tarificacion.getId());
 			
 			String message="";
-			if(cdrsDeArchivo.size()>CDRsRegistrados.size())
+			if(cdrsDeArchivo.size()>CDRsTarificados.size())
 				message="existian CDR de lineas no registradas";
 			
 			Map<String, Object> viewObjects = new HashMap<String, Object>();
 			viewObjects.put("cant", cdrsDeArchivo.size());
 			viewObjects.put("message", message);
-			viewObjects.put("CDRSIngresados", CDRsRegistrados);
+			viewObjects.put("CDRSIngresados", CDRsTarificados);
 	        viewObjects.put("tipo", request.params(":tipo"));
 			return engine.render(new ModelAndView(viewObjects, "CDRsIngresados"));
 		});
@@ -89,9 +98,13 @@ public class CDRController {
 		get("/:tipo/getCDRsRegistered/:id",(request, response) ->{
 			ObtenerCDRsSegunTarificacion obtenerCDRs=new ObtenerCDRsSegunTarificacion();
 			ObtenerTarificacion obtenerTarificacion=new ObtenerTarificacion();
-			Tarificacion tarificacion=obtenerTarificacion.getTarificacion(Integer.parseInt(request.params(":id")),request.params(":tipo"));
+			GestionarConfiguracionPersistencia configuracion=new GestionarConfiguracionPersistencia();
+			
+			configuracion.seleccionarPersistencia(request.params(":tipo"));
+			Tarificacion tarificacion=obtenerTarificacion.getTarificacion(Integer.parseInt(request.params(":id")),configuracion.getPersistenciaTarificacion());
 			List<CDR> cdrsTarificacion=obtenerCDRs.obtenerCDRS(tarificacion);
 			Iterable<CDR> listaCDRs=cdrsTarificacion;
+			
 			Map<String, Object> viewObjects = new HashMap<String, Object>();
 			viewObjects.put("listaCDRs", listaCDRs);
 			viewObjects.put("cant", tarificacion.getId());
