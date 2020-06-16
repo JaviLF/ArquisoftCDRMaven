@@ -22,7 +22,7 @@ public class GenerarDatosFacturaJSON {
 		
 		return jsonInString;
 		
-	}
+	} 
 	
 	public List<CDR> selecionarCDRsDelMes(List<CDR> registroTotalDeCDRs,int mes){
 		List<CDR> cdrsDelMes=new ArrayList<CDR>();

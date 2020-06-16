@@ -1,0 +1,4 @@
+Numero,Nombre,Plan,Extra
+70712345,Jose Perez,Prepago
+70754321,Ramiro Rodriguez,Postpago
+707789012,Pamela Fuentes,Wow,[70712345,70754321]
